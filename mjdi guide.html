@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="LSS Nexus - Enterprise Logistics Operations Platform">
+    <meta name="description" content="LSS TEST - Enterprise Logistics Operations Platform">
     <meta name="author" content="Sgt K. Kirby">
-    <title>LSS NEXUS | Logistics Command Console</title>
+    <title>LSS TEST | Logistics Command Console</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,7 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Cap_Badge_of_the_RLC.png" alt="RLC Crest">
             </div>
             <div class="boot-terminal" id="boot-log">
-                <div class="log-line">INITIALIZING LSS NEXUS KERNEL v7.0...</div>
+                <div class="log-line">INITIALIZING LSS TEST KERNEL v7.0...</div>
             </div>
             <div class="boot-progress-track">
                 <div class="boot-progress-bar" id="boot-bar"></div>
@@ -61,7 +61,7 @@
                 <div class="brand-lockup">
                     <div class="brand-logo">N</div>
                     <div class="brand-info">
-                        <span class="brand-name">LSS NEXUS</span>
+                        <span class="brand-name">LSS TEST</span>
                         <span class="brand-role">System Admin</span>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <button class="cmd-palette-trigger" onclick="Nexus.cmd.open()">
+            <button class="cmd-palette-trigger" onclick="TEST.cmd.open()">
                 <div class="icon-box"><svg class="icon"><use href="#icon-search"></use></svg></div>
                 <span>Command Palette</span>
                 <kbd>⌘K</kbd>
@@ -89,34 +89,34 @@
 
             <nav class="nav-tree" id="nav-root">
                 <div class="nav-section-label">OPERATIONS</div>
-                <a href="#dashboard" class="nav-item active" onclick="Nexus.router.navigate('dashboard')">
+                <a href="#dashboard" class="nav-item active" onclick="TEST.router.navigate('dashboard')">
                     <svg class="icon"><use href="#icon-grid"></use></svg>
                     <span>Dashboard</span>
                 </a>
-                <a href="#inventory" class="nav-item" onclick="Nexus.router.navigate('inventory')">
+                <a href="#inventory" class="nav-item" onclick="TEST.router.navigate('inventory')">
                     <svg class="icon"><use href="#icon-list"></use></svg>
                     <span>Inventory (MJDI)</span>
                 </a>
-                <a href="#receipts" class="nav-item" onclick="Nexus.router.navigate('receipts')">
+                <a href="#receipts" class="nav-item" onclick="TEST.router.navigate('receipts')">
                     <svg class="icon"><use href="#icon-box"></use></svg>
                     <span>Receipts (U010)</span>
                 </a>
                 
                 <div class="nav-section-label">SIMULATIONS</div>
-                <a href="#vital" class="nav-item" onclick="Nexus.router.navigate('vital')">
+                <a href="#vital" class="nav-item" onclick="TEST.router.navigate('vital')">
                     <svg class="icon"><use href="#icon-terminal"></use></svg>
                     <span>VITAL Terminal</span>
                 </a>
 
                 <div class="nav-section-label">ADMINISTRATION</div>
-                <a href="#" class="nav-item" onclick="Nexus.admin.open()">
+                <a href="#" class="nav-item" onclick="TEST.admin.open()">
                     <svg class="icon"><use href="#icon-settings"></use></svg>
                     <span>System Config</span>
                 </a>
             </nav>
 
             <div class="sidebar-footer">
-                <button class="theme-toggle" onclick="Nexus.theme.toggle()">
+                <button class="theme-toggle" onclick="TEST.theme.toggle()">
                     <span class="theme-text">Toggle Theme</span>
                     <div class="theme-icon"></div>
                 </button>
@@ -127,11 +127,11 @@
             
             <header class="topbar">
                 <div class="topbar-left">
-                    <button class="mobile-menu-toggle" onclick="Nexus.ui.toggleSidebar()">
+                    <button class="mobile-menu-toggle" onclick="TEST.ui.toggleSidebar()">
                         <svg class="icon"><use href="#icon-list"></use></svg>
                     </button>
                     <div class="breadcrumbs" id="breadcrumbs">
-                        <span class="crumb-root">Nexus</span>
+                        <span class="crumb-root">TEST</span>
                         <span class="crumb-sep">/</span>
                         <span class="crumb-active">Dashboard</span>
                     </div>
@@ -163,11 +163,11 @@
                                 <h1>Operations Dashboard</h1>
                                 <p>Welcome back, Sgt Kirby. System integrity is at 100%. You have 3 pending tasks in the VITAL queue and 12 outstanding U010 receipts.</p>
                                 <div class="hero-actions">
-                                    <button class="btn btn-primary" onclick="Nexus.walkthrough.start('receipts')">
+                                    <button class="btn btn-primary" onclick="TEST.walkthrough.start('receipts')">
                                         <svg class="icon"><use href="#icon-play"></use></svg>
                                         Start Receipt Guide
                                     </button>
-                                    <button class="btn btn-secondary" onclick="Nexus.router.navigate('vital')">
+                                    <button class="btn btn-secondary" onclick="TEST.router.navigate('vital')">
                                         Open VITAL
                                     </button>
                                 </div>
@@ -255,7 +255,7 @@
                         </section>
 
                         <footer class="content-footer">
-                            <span>LSS Nexus System v7.0</span>
+                            <span>LSS TEST System v7.0</span>
                             <span>RLC Development Wing</span>
                         </footer>
                     </div>
@@ -279,14 +279,14 @@
                             </div>
                             <div class="crt-controls">
                                 <div class="key-row">
-                                    <button class="f-key" onclick="Nexus.vital.input('F1')">F1 Help</button>
-                                    <button class="f-key" onclick="Nexus.vital.input('F3')">F3 Exit</button>
-                                    <button class="f-key" onclick="Nexus.vital.input('F5')">F5 Refresh</button>
-                                    <button class="f-key" onclick="Nexus.vital.input('F10')">F10 Save</button>
+                                    <button class="f-key" onclick="TEST.vital.input('F1')">F1 Help</button>
+                                    <button class="f-key" onclick="TEST.vital.input('F3')">F3 Exit</button>
+                                    <button class="f-key" onclick="TEST.vital.input('F5')">F5 Refresh</button>
+                                    <button class="f-key" onclick="TEST.vital.input('F10')">F10 Save</button>
                                 </div>
                                 <div class="input-row">
                                     <input type="text" id="vital-input" placeholder="Type command..." autocomplete="off">
-                                    <button class="enter-btn" onclick="Nexus.vital.submit()">ENTER</button>
+                                    <button class="enter-btn" onclick="TEST.vital.submit()">ENTER</button>
                                 </div>
                             </div>
                         </div>
@@ -328,16 +328,16 @@
 
     <div id="overlay-cinema" class="overlay-backdrop">
         <div class="cinema-window">
-            <button class="cinema-close" onclick="Nexus.walkthrough.close()">✕ ESC</button>
+            <button class="cinema-close" onclick="TEST.walkthrough.close()">✕ ESC</button>
             <div class="cinema-layout">
                 <div class="cinema-visual">
                     <div class="visual-container">
                         <img id="wt-img" src="" alt="Guide Step">
                         <div class="visual-overlay">
-                            <button class="nav-arrow prev" onclick="Nexus.walkthrough.prev()">
+                            <button class="nav-arrow prev" onclick="TEST.walkthrough.prev()">
                                 <svg class="icon"><use href="#icon-chevron-left"></use></svg>
                             </button>
-                            <button class="nav-arrow next" onclick="Nexus.walkthrough.next()">
+                            <button class="nav-arrow next" onclick="TEST.walkthrough.next()">
                                 <svg class="icon"><use href="#icon-chevron-right"></use></svg>
                             </button>
                         </div>
@@ -364,8 +364,8 @@
                             <div class="progress-bar-fill" id="wt-progress"></div>
                         </div>
                         <div class="action-row">
-                            <button class="btn btn-secondary full" onclick="Nexus.walkthrough.prev()">Back</button>
-                            <button class="btn btn-primary full" onclick="Nexus.walkthrough.next()">Next Step</button>
+                            <button class="btn btn-secondary full" onclick="TEST.walkthrough.prev()">Back</button>
+                            <button class="btn btn-primary full" onclick="TEST.walkthrough.next()">Next Step</button>
                         </div>
                     </div>
                 </div>
@@ -377,11 +377,11 @@
         <div class="admin-panel">
             <div class="admin-nav">
                 <div class="admin-title">SYS ADMIN</div>
-                <button class="adm-link active" onclick="Nexus.admin.switchTab('gen')">General</button>
-                <button class="adm-link" onclick="Nexus.admin.switchTab('users')">Users</button>
-                <button class="adm-link" onclick="Nexus.admin.switchTab('logs')">Logs</button>
+                <button class="adm-link active" onclick="TEST.admin.switchTab('gen')">General</button>
+                <button class="adm-link" onclick="TEST.admin.switchTab('users')">Users</button>
+                <button class="adm-link" onclick="TEST.admin.switchTab('logs')">Logs</button>
                 <div class="spacer"></div>
-                <button class="adm-link danger" onclick="Nexus.admin.close()">Exit</button>
+                <button class="adm-link danger" onclick="TEST.admin.close()">Exit</button>
             </div>
             <div class="admin-body">
                 <div id="adm-tab-gen" class="adm-tab-content active">
