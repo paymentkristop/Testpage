@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="Kris Kirby">
+    <meta name="copyright" content="LSS Guides developed by K.R.I.S K.I.R.B.Y">
+    <title>Sgt Kirby's LSS Guides</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+    <div id="signature-lock-k-r-i-s-k-i-r-b-y"></div>
+
+    <div class="admin-trigger-secret" onclick="showAdminLogin()" title=""></div>
+
+    <div id="admin-login-overlay">
+        <div class="login-box">
+            <h3>Admin Access</h3>
+            <input type="password" id="admin-pin" placeholder="PIN" maxlength="4">
+            <br>
+            <button onclick="checkAdminPin()">Login</button>
+            <button onclick="closeAdminLogin()" style="background:#666; margin-left:10px;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="admin-panel">
+        <div class="admin-header">
+            <h3>Admin Panel</h3>
+            <button class="admin-btn close" onclick="toggleAdminPanel()">X</button>
+        </div>
+
+        <div class="admin-section">
+            <h4>Edit Mode</h4>
+            <p style="font-size: 0.8rem; color: #a0aec0;">Click text in the guide to edit inline.</p>
+            <button class="admin-btn" id="toggle-edit-btn" onclick="toggleEditMode()">Enable Text Editing</button>
+        </div>
+
+        <div class="admin-section">
+            <h4>Add Category/Section</h4>
+            <div class="admin-form-group">
+                <label>Target Guide</label>
+                <select id="target-guide-select">
+                    <option value="nav-content-vital">VITAL Guide</option>
+                    <option value="nav-content-mjdi">MJDI Guide</option>
+                    <option value="nav-content-lsai">LSA&I Tool</option>
+                </select>
+            </div>
+            <div class="admin-form-group">
+                <label>Category Title</label>
+                <input type="text" id="new-category-title" placeholder="e.g., 9. New Process">
+            </div>
+            <button class="admin-btn" onclick="addNewCategory()">Add Category</button>
+        </div>
+
+        <div class="admin-section">
+            <h4>Manage Categories</h4>
+            <div class="admin-form-group">
+                <label>Select Category to Delete</label>
+                <select id="delete-category-select">
+                </select>
+            </div>
+            <button class="admin-btn delete-cat" onclick="deleteCategory()">Delete Category</button>
+        </div>
+
+        <div class="admin-section">
+            <h4>Add Content Step</h4>
+            <div class="admin-form-group">
+                <label>Target Section</label>
+                <select id="target-section-select">
+                </select>
+            </div>
+            <div class="admin-form-group">
+                <label>Step Number</label>
+                <input type="text" id="new-step-num" placeholder="e.g. 4">
+            </div>
+            <div class="admin-form-group">
+                <label>Step Title</label>
+                <input type="text" id="new-step-title" placeholder="Step Title">
+            </div>
+            <div class="admin-form-group">
+                <label>Instructions</label>
+                <textarea id="new-step-text" rows="3"></textarea>
+            </div>
+            <div class="admin-form-group">
+                <label>Include Terminal Box?</label>
+                <select id="include-term">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <div class="admin-form-group" id="term-content-group" style="display:none;">
+                <label>Terminal Content</label>
+                <textarea id="new-term-text" rows="3" placeholder="Green screen text..."></textarea>
+            </div>
+
+            <div class="admin-form-group">
+                <label>Include Image Upload Area?</label>
+                <select id="include-image">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <button class="admin-btn" onclick="addNewStep()">Add Step</button>
+        </div>
+
+        <button class="admin-btn save" onclick="saveChanges()">Save to Browser Memory</button>
+        <button class="admin-btn export" onclick="downloadHtml()">Download Updated HTML</button>
+        <div id="auto-save-indicator" style="color: #48bb78; font-size: 0.8rem; text-align: center; margin-top: 10px; opacity: 0; transition: opacity 0.5s;">Autosaved</div>
+    </div>
+
+    <div id="cover-page">
+        <div class="rlc-badge-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Cap_Badge_of_the_RLC.png" alt="RLC Cap Badge">
+        </div>
+        <h1 class="cover-title">Sgt Kirby's</h1>
+        <div class="cover-subtitle">Logistic Supply Specialist (LSS) Guides</div>
+        
+        <div class="launch-grid">
+            <button class="launch-btn" onclick="window.location.href='vital guide.html'">VITAL</button>
+            <button class="launch-btn" onclick="window.location.href='mjdi guide.html'">MJDI</button>
+        </div>
+
+        <div class="lsai-btn-container">
+            <button class="launch-btn" onclick="window.location.href='LSA&I Question Set.html'">Latest LSA&I Question Set</button>
+        </div>
+
+        <div class="test-challenge-box" onclick="window.location.href='Test your knowledge.html'">
+            Test Your Knowledge
+        </div>
+
+        <div class="protected-footer">Created by Kris Kirby</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
