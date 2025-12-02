@@ -1,357 +1,1063 @@
 /**
- * LSS NEXUS CORE CONTROLLER v7.0
- * Copyright 2025 RLC Development Wing
+ * ==========================================================================================
+ * LSS NEXUS ENTERPRISE CORE v9.0
+ * PROPRIETARY LOGISTICS OPERATIONS SYSTEM
+ * * DEVELOPED BY: RLC DEVELOPMENT WING
+ * ARCHITECT: SGT K. KIRBY
+ * ==========================================================================================
+ * * TABLE OF CONTENTS:
+ * 1.0  CONFIGURATION
+ * 2.0  DATABASE SEEDING (CONTENT REPOSITORY)
+ * 2.1 User Registry
+ * 2.2 Learning Modules (The Curriculum)
+ * 2.3 Achievement Badges
+ * 3.0  STATE MANAGEMENT (LOCAL STORAGE INTERFACE)
+ * 4.0  CORE CONTROLLER (APP LIFECYCLE)
+ * 5.0  AUTHENTICATION MODULE
+ * 6.0  ROUTING ENGINE
+ * 7.0  GAMIFICATION SYSTEM
+ * 8.0  MODULE RENDERER & TASK ENGINE
+ * 9.0  ADMINISTRATION CONSOLE
+ * 10.0 COMMAND PALETTE & SEARCH
+ * 11.0 UI UTILITIES
+ * ==========================================================================================
  */
 
-// --- 1. DATA REPOSITORIES (Hardcoded for Demo) ---
+/* ==========================================================================================
+   1.0 CONFIGURATION
+   ========================================================================================== */
+const CONFIG = {
+    appVersion: '9.0.21',
+    storageKeys: {
+        users: 'nexus_users_v9',
+        currentUser: 'nexus_session_v9',
+        settings: 'nexus_settings_v9',
+        logs: 'nexus_logs_v9'
+    },
+    gameSettings: {
+        xpBase: 100, // Base XP for simple tasks
+        xpMultiplier: 1.5, // Multiplier for advanced modules
+        levelThreshold: 1000, // XP needed per level
+        maxLevel: 50
+    },
+    ui: {
+        animationSpeed: 300,
+        toastDuration: 4000
+    }
+};
 
-const DB_INVENTORY = [
-    { nsn: '1005-99-123-4567', desc: 'Rifle, 5.56mm, L85A3', doq: 'EA', loc: 'ARM-01-A', qty: 45, status: 'SVC' },
-    { nsn: '5820-99-882-1102', desc: 'Radio, Bowman, PRC 355', doq: 'EA', loc: 'COM-02-B', qty: 12, status: 'R2' },
-    { nsn: '2540-99-721-3344', desc: 'Tyre, 11R22.5, Michelin', doq: 'EA', loc: 'MT-05-C', qty: 8, status: 'SVC' },
-    { nsn: '8415-99-112-9988', desc: 'Helmet, Virtus, Large', doq: 'EA', loc: 'Q-01-A', qty: 150, status: 'SVC' },
-    { nsn: '6625-99-441-2299', desc: 'Multimeter, Fluke', doq: 'EA', loc: 'TE-09-D', qty: 3, status: 'SVC' },
+/* ==========================================================================================
+   2.0 DATABASE SEEDING
+   ========================================================================================== */
+
+/**
+ * 2.1 USER REGISTRY (Mock Database)
+ * Includes pre-hashed passwords (simulated) and role definitions.
+ */
+const SEED_USERS = [
+    { 
+        id: '30123456', 
+        name: 'Sgt K. Kirby', 
+        initials: 'SK',
+        role: 'Admin', 
+        status: 'Active', 
+        xp: 14500, 
+        level: 14, 
+        badges: ['core_cert', 'admin_prime', 'expert_supply'],
+        completedModules: ['mjdi_01', 'mjdi_02', 'mjdi_03', 'mjdi_04'],
+        password: 'admin', // In prod, this would be hashed
+        lastLogin: '2025-12-04 08:30:21'
+    },
+    { 
+        id: '30224466', 
+        name: 'Cpl J. Jones', 
+        initials: 'JJ',
+        role: 'Instructor', 
+        status: 'Active', 
+        xp: 8200, 
+        level: 8, 
+        badges: ['core_cert', 'instructor_badge'],
+        completedModules: ['mjdi_01', 'mjdi_02'],
+        password: 'user',
+        lastLogin: '2025-12-03 14:15:00'
+    },
+    { 
+        id: '30335577', 
+        name: 'LCpl A. Smith', 
+        initials: 'AS',
+        role: 'Student', 
+        status: 'Active', 
+        xp: 1200, 
+        level: 1, 
+        badges: [],
+        completedModules: [],
+        password: 'user',
+        lastLogin: '2025-12-01 09:00:00'
+    },
+    { 
+        id: '30446688', 
+        name: 'Pte B. Davis', 
+        initials: 'BD',
+        role: 'Student', 
+        status: 'Locked', 
+        xp: 0, 
+        level: 0, 
+        badges: [],
+        completedModules: [],
+        password: 'user',
+        lastLogin: 'Never'
+    }
 ];
 
-const DB_WALKTHROUGHS = {
-    'receipts': {
-        title: 'MJDI Receipts (U010)',
+/**
+ * 2.2 LEARNING MODULES (The Curriculum)
+ * This object contains the full text of the guide. 
+ * EXPANDED CONTENT: Contains detailed steps, hints, and metadata.
+ */
+const SEED_MODULES = {
+    // --- CATEGORY: RECEIPTS ---
+    'mjdi_01': {
+        id: 'mjdi_01',
+        title: 'Receipts: Standard Dues-In (U010)',
+        category: 'Receipts',
+        difficulty: 'Core',
+        xpReward: 500,
+        timeEst: '15 Mins',
+        description: 'The fundamental process of receipting expected stock against an outstanding demand.',
         steps: [
             {
-                title: 'IV Verification',
-                desc: 'Locate the Issue Voucher (IV). Confirm the D of Q (Unit of Issue) matches the physical item exactly. Check the Condition Code is A1 (Serviceable).',
-                tip: 'If D of Q is "Box of 100", ensure you are not receipting 100 boxes.',
-                img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=STEP+1:+CHECK+IV'
+                title: 'Documentation Verification',
+                content: `Before touching the keyboard, you must physically verify the incoming consignment.
+                <br><br>
+                <strong>Critical Checks:</strong>
+                <ul>
+                    <li><strong>NSN:</strong> Ensure the NATO Stock Number on the package matches the Issue Voucher (IV).</li>
+                    <li><strong>D of Q:</strong> Check the Denomination of Quantity (e.g., received 1 Box of 100 vs 1 Each).</li>
+                    <li><strong>Condition:</strong> Verify the materiel condition is A1 (Serviceable). If damaged, do not receipt as A1.</li>
+                </ul>`,
+                tip: 'If there is a discrepancy, quarantine the item and initiate a Discrepancy Report (F445).'
             },
             {
-                title: 'Open Transaction Menu',
-                desc: 'Click on the "Transactions" tab in the top ribbon. Select "Receipts" from the dropdown list.',
-                tip: 'Keyboard Shortcut: Alt + T',
-                img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=STEP+2:+OPEN+MENU'
+                title: 'Navigate to Transaction Screen',
+                content: `On the MJDI Main Menu, navigate to the <strong>Transactions</strong> tab.
+                <br>Select <strong>Receipts</strong> from the dropdown list.
+                <br>Alternatively, use the keyboard shortcut <code>Alt + T</code> followed by <code>R</code>.`,
+                tip: 'Ensure you are logged into the correct Unit Account (UIN) before proceeding.'
             },
             {
                 title: 'Select Transaction Type',
-                desc: 'In the popup window, select "U010 - Dues In Receipt" from the transaction type selector.',
-                tip: 'Use U013 for unexpected items (Local Purchase).',
-                img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=STEP+3:+SELECT+U010'
+                content: `In the Receipt header, locate the Transaction Code field.
+                <br>Select <strong>U010 - Receipt from Depot/Unit</strong>.
+                <br>This code links the receipt to your outstanding Dues-In list, closing the demand liability.`,
+                tip: 'Do NOT use U013 for items you have demanded. U013 is for unexpected/local items only.'
             },
             {
-                title: 'Enter NSN',
-                desc: 'Scan or type the NSN. The system will auto-match to the outstanding Demand if U010 was selected.',
-                tip: 'Watch out for "Alternative Item" warnings.',
-                img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=STEP+4:+ENTER+NSN'
+                title: 'Enter Consignment Data',
+                content: `Scan the barcode or type the NSN into the Item field.
+                <br>The system should auto-populate the Description and Price.
+                <br>Enter the <strong>Consignor UIN</strong> and the <strong>IV Number</strong> from the paperwork.`,
+                tip: 'Double check the UIN. Receipting from the wrong source affects audit trails.'
             },
             {
-                title: 'Post & Print',
-                desc: 'Click the Disk icon to save. The RV number will appear. Write this on the IV immediately.',
-                tip: 'File the IV in the CRB within 24 hours.',
-                img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=STEP+5:+COMPLETE'
+                title: 'Commit and Finalize',
+                content: `Click the <strong>Post (Disk Icon)</strong> to save the record.
+                <br>The system will generate a Receipt Voucher (RV) number (e.g., RV 10023).
+                <br><strong>Action:</strong> Write this RV number on the physical IV immediately and file in the CRB.`,
+                tip: 'Receipts must be filed within 24 hours of physical arrival.'
             }
         ]
     },
-    'issues': {
-        title: 'MJDI Issues (AinU)',
+    'mjdi_02': {
+        id: 'mjdi_02',
+        title: 'Receipts: Local Purchase (U013)',
+        category: 'Receipts',
+        difficulty: 'Core',
+        xpReward: 400,
+        timeEst: '10 Mins',
+        description: 'Bringing items onto account that were not demanded via the supply chain (e.g., cash purchases).',
         steps: [
-            { title: 'Select Account', desc: 'Navigate to Issues. Select target AinU.', tip: '', img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=ISSUE+STEP+1' },
-            { title: 'Add Item', desc: 'Scan NSN. Ensure "Loan" is checked.', tip: '', img: 'https://via.placeholder.com/800x600/1e293b/ffffff?text=ISSUE+STEP+2' }
+            {
+                title: 'Authority Check',
+                content: 'Ensure you have financial authority (ePC receipt or Local Purchase Order) before bringing items onto account.',
+                tip: 'Items bought with public money MUST be accounted for.'
+            },
+            {
+                title: 'Select U013',
+                content: 'Navigate to Receipts. Select <strong>U013 - Receipt, Local Purchase</strong>.',
+                tip: 'This transaction creates stock without a pre-existing demand.'
+            },
+            {
+                title: 'Codification',
+                content: 'If the item has an NSN, use it. If not, you may need to create a Non-Standard Item (NSI) record first.',
+                tip: 'Search for existing NSNs before creating new NSI records.'
+            }
+        ]
+    },
+
+    // --- CATEGORY: ISSUES ---
+    'mjdi_03': {
+        id: 'mjdi_03',
+        title: 'Issues: To AinU Holder',
+        category: 'Issues',
+        difficulty: 'Core',
+        xpReward: 450,
+        timeEst: '12 Mins',
+        description: 'Issuing stock to internal departments (Articles in Use).',
+        steps: [
+            {
+                title: 'Identify Customer',
+                content: 'Navigate to <strong>Transactions > Issues</strong>. Use the search glass to find the AinU Holder (e.g., SQMS, MT, WKSP).',
+                tip: 'Ensure the AinU holder has a valid signature on the delegation list.'
+            },
+            {
+                title: 'Loan vs Consumption',
+                content: `<strong>Crucial Decision:</strong>
+                <ul>
+                    <li><strong>Permanent Issue (P):</strong> Item is consumed (e.g., Paint, Oil, Batteries). Removed from account.</li>
+                    <li><strong>Loan Issue (L):</strong> Item is durable (e.g., Drill, Tent). Transferred to AinU ledger.</li>
+                </ul>`,
+                tip: 'Incorrectly issuing a drill as "P" will lose the asset from the register.'
+            },
+            {
+                title: 'Process Issue',
+                content: 'Enter NSN and Qty. Click Post. Print 2 copies of the Issue Voucher (IV). One for them, one for you.',
+                tip: 'Get a signature before handing over the goods.'
+            }
+        ]
+    },
+    'mjdi_04': {
+        id: 'mjdi_04',
+        title: 'Issues: External Transfer (U015)',
+        category: 'Issues',
+        difficulty: 'Advanced',
+        xpReward: 600,
+        timeEst: '20 Mins',
+        description: 'Transferring stock to another Unit or Depot.',
+        steps: [
+            { title: 'Authority', content: 'Ensure you have a redistrubtion order or demand from the requesting unit.', tip: ''},
+            { title: 'Select U015', content: 'Use transaction U015. Enter the destination UIN carefully.', tip: 'Wrong UIN means stock goes missing.'},
+            { title: 'Pick and Pack', content: 'Generate the Issue Voucher. Ensure items are packed securely for transport.', tip: 'Include a copy of the IV inside the box.'}
+        ]
+    },
+
+    // --- CATEGORY: STOCKTAKING ---
+    'mjdi_05': {
+        id: 'mjdi_05',
+        title: 'Stocktaking: Program & Count',
+        category: 'Stocktaking',
+        difficulty: 'Advanced',
+        xpReward: 800,
+        timeEst: '30 Mins',
+        description: 'Managing the mandatory stocktaking cycle (100% check over 2 years).',
+        steps: [
+            { title: 'Create Programme', content: 'Open Stocktaking Module. Select "Create Programme". Choose "Random" or "Location" based.', tip: ''},
+            { title: 'Print Sheets', content: 'Print the count sheets (blind count - no quantities shown).', tip: 'Do not let the counter see the system stock.'},
+            { title: 'Input Count', content: 'Enter the physical figures. The system will highlight discrepancies.', tip: ''},
+            { title: 'Resolve', content: 'Investigate discrepancies. If valid, post adjustments (Surplus/Deficiency).', tip: 'Large variances require Officer approval.'}
+        ]
+    },
+
+    // --- CATEGORY: DISPOSALS ---
+    'mjdi_06': {
+        id: 'mjdi_06',
+        title: 'GXD: Gateway Disposals',
+        category: 'Disposals',
+        difficulty: 'Specialist',
+        xpReward: 700,
+        timeEst: '25 Mins',
+        description: 'Declaring items as scrap or beyond economical repair (BER).',
+        steps: [
+            { title: 'Condition Check', content: 'Verify item is definitely BER. If high value, get an EME Report.', tip: ''},
+            { title: 'Scrap Process', content: 'Trans > Disposals > GXD. Select "Scrap".', tip: ''},
+            { title: 'Backloading', content: 'If item is hazardous or sensitive, use the Backload process instead of Scrap.', tip: ''}
+        ]
+    },
+
+    // --- CATEGORY: ADMIN ---
+    'mjdi_07': {
+        id: 'mjdi_07',
+        title: 'UAA: User Role Management',
+        category: 'Admin',
+        difficulty: 'Command',
+        xpReward: 300,
+        timeEst: '10 Mins',
+        description: 'Adding and removing users from the MJDI stack.',
+        steps: [
+            { title: 'Access Admin', content: 'Open System Admin > Users.', tip: ''},
+            { title: 'Create Profile', content: 'Input Service Number and Role. Assign to UIN.', tip: ''}
         ]
     }
 };
 
-const DB_SEARCH = [
-    { label: 'Receipts Guide', meta: 'MJDI U010', action: 'route:receipts' },
-    { label: 'Issues Guide', meta: 'MJDI AinU', action: 'route:issues' },
-    { label: 'VITAL Terminal', meta: 'Simulator', action: 'route:vital' },
-    { label: 'Inventory List', meta: 'Database', action: 'route:inventory' },
-    { label: 'System Admin', meta: 'Config', action: 'func:admin' },
-    { label: 'Toggle Theme', meta: 'UI', action: 'func:theme' }
-];
+/**
+ * 2.3 ACHIEVEMENT BADGES
+ */
+const SEED_BADGES = {
+    'core_cert': { id: 'core_cert', name: 'Core Certified', icon: 'icon-check', desc: 'Completed all Basic Receipts & Issues modules.' },
+    'admin_prime': { id: 'admin_prime', name: 'System Architect', icon: 'icon-settings', desc: 'Reached Level 10 and unlocked Admin privileges.' },
+    'expert_supply': { id: 'expert_supply', name: 'Supply Expert', icon: 'icon-box', desc: 'Logged 10,000 XP in operations.' },
+    'instructor_badge': { id: 'instructor_badge', name: 'Instructor', icon: 'icon-book', desc: 'Authorized to train others.' },
+    'first_login': { id: 'first_login', name: 'Recruit', icon: 'icon-user', desc: 'Logged in for the first time.' }
+};
 
-// --- 2. CORE CLASS ---
-
-class NexusController {
+/* ==========================================================================================
+   3.0 STATE MANAGEMENT (LOCAL STORAGE INTERFACE)
+   ========================================================================================== */
+class Store {
     constructor() {
-        this.router = new Router();
-        this.admin = new AdminModule();
-        this.walkthrough = new WalkthroughModule();
-        this.cmd = new CommandModule();
-        this.vital = new VitalModule();
-        this.theme = new ThemeModule();
-        this.ui = new UIModule();
-        this.util = new Utilities();
+        this.init();
+    }
+
+    init() {
+        if (!localStorage.getItem(CONFIG.storageKeys.users)) {
+            console.log(">> INIT: Seeding User Database...");
+            localStorage.setItem(CONFIG.storageKeys.users, JSON.stringify(SEED_USERS));
+        }
+        if (!localStorage.getItem(CONFIG.storageKeys.logs)) {
+            localStorage.setItem(CONFIG.storageKeys.logs, JSON.stringify([]));
+        }
+        this.checkSession();
+    }
+
+    getUsers() {
+        return JSON.parse(localStorage.getItem(CONFIG.storageKeys.users));
+    }
+
+    saveUsers(users) {
+        localStorage.setItem(CONFIG.storageKeys.users, JSON.stringify(users));
+    }
+
+    getUser(id) {
+        const users = this.getUsers();
+        return users.find(u => u.id === id || u.name === id); // Search by ID or Name
+    }
+
+    checkSession() {
+        const session = sessionStorage.getItem(CONFIG.storageKeys.currentUser);
+        if (session) {
+            this.currentUser = JSON.parse(session);
+        } else {
+            this.currentUser = null;
+        }
+    }
+
+    setSession(user) {
+        sessionStorage.setItem(CONFIG.storageKeys.currentUser, JSON.stringify(user));
+        this.currentUser = user;
+    }
+
+    clearSession() {
+        sessionStorage.removeItem(CONFIG.storageKeys.currentUser);
+        this.currentUser = null;
+    }
+
+    addLog(action, details) {
+        const logs = JSON.parse(localStorage.getItem(CONFIG.storageKeys.logs));
+        const entry = {
+            timestamp: new Date().toLocaleString(),
+            user: this.currentUser ? this.currentUser.name : 'SYSTEM',
+            action: action,
+            details: details
+        };
+        logs.unshift(entry); // Add to top
+        if (logs.length > 100) logs.pop(); // Keep last 100
+        localStorage.setItem(CONFIG.storageKeys.logs, JSON.stringify(logs));
+    }
+
+    getLogs() {
+        return JSON.parse(localStorage.getItem(CONFIG.storageKeys.logs));
+    }
+}
+
+/* ==========================================================================================
+   4.0 CORE CONTROLLER (APP LIFECYCLE)
+   ========================================================================================== */
+class NexusCore {
+    constructor() {
+        this.store = new Store();
+        
+        // Sub-Controllers
+        this.auth = new AuthManager(this);
+        this.router = new Router(this);
+        this.ui = new UIManager(this);
+        this.game = new GamificationEngine(this);
+        this.task = new TaskEngine(this);
+        this.admin = new AdminController(this);
+        this.cmd = new CommandPalette(this);
 
         this.init();
     }
 
     init() {
-        this.simulateBoot();
-        this.setupEventListeners();
-        this.populateInventory();
+        // Boot Sequence Simulation
+        setTimeout(() => {
+            const bootLayer = document.getElementById('sys-boot-layer');
+            const bootBar = document.getElementById('boot-bar');
+            
+            // Animate bar
+            bootBar.style.width = '100%';
+            
+            setTimeout(() => {
+                bootLayer.style.opacity = '0';
+                setTimeout(() => bootLayer.remove(), 800);
+                
+                // Check Auth State
+                if (this.store.currentUser) {
+                    this.router.loadView('view-app');
+                    this.onAppLoad();
+                } else {
+                    this.router.loadView('view-auth');
+                }
+            }, 1500);
+        }, 500);
     }
 
-    simulateBoot() {
-        const bar = document.getElementById('boot-bar');
-        const overlay = document.getElementById('sys-boot-layer');
-        const shell = document.getElementById('app-shell');
+    onAppLoad() {
+        this.ui.updateHUD();
+        this.ui.renderDashboard();
+        this.ui.renderModuleGrid();
         
-        let width = 0;
-        const interval = setInterval(() => {
-            width += 4;
-            if(bar) bar.style.width = width + '%';
-            if (width >= 100) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    overlay.style.opacity = '0';
-                    shell.classList.remove('hidden');
-                    shell.classList.add('visible');
-                    setTimeout(() => overlay.remove(), 500);
-                }, 500);
-            }
-        }, 30); // Fast boot for UX
+        // Admin check
+        if (this.store.currentUser.role === 'Admin') {
+            document.getElementById('admin-nav-section').style.display = 'block';
+        }
+    }
+}
+
+/* ==========================================================================================
+   5.0 AUTHENTICATION MODULE
+   ========================================================================================== */
+class AuthManager {
+    constructor(core) {
+        this.core = core;
     }
 
-    setupEventListeners() {
-        document.addEventListener('keydown', (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                e.preventDefault();
-                this.cmd.open();
+    login() {
+        const idInput = document.getElementById('login-user').value;
+        const passInput = document.getElementById('login-pass').value;
+        
+        const user = this.core.store.getUser(idInput); // Can simulate by ID or Username
+
+        if (user) {
+            if (user.status === 'Locked') {
+                alert("ACCOUNT LOCKED. Contact Administration.");
+                return;
             }
-            if (e.key === 'Escape') {
-                this.cmd.close();
-                this.walkthrough.close();
-                this.admin.close();
+            if (user.password === passInput) {
+                // Success
+                this.core.store.setSession(user);
+                this.core.store.addLog('LOGIN', 'User authenticated successfully');
+                
+                // Transition
+                this.core.router.loadView('view-app');
+                this.core.onAppLoad();
+                
+                // Welcome Toast
+                this.core.game.showToast(`Welcome back, ${user.name}`, 'info');
+                
+                // First Login Badge Check
+                if (!user.badges.includes('first_login')) {
+                    this.core.game.awardBadge('first_login');
+                }
+            } else {
+                this.shakeForm();
+                alert("INVALID CREDENTIALS");
             }
+        } else {
+            this.shakeForm();
+            alert("USER NOT FOUND");
+        }
+    }
+
+    logout() {
+        this.core.store.addLog('LOGOUT', 'User session ended');
+        this.core.store.clearSession();
+        location.reload(); // Hard reset
+    }
+
+    toggleRegister() {
+        // Simple mock implementation
+        const id = prompt("Enter new Service Number:");
+        if(!id) return;
+        const name = prompt("Enter Rank and Name:");
+        
+        const newUser = {
+            id: id,
+            name: name,
+            initials: name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase(),
+            role: 'Student',
+            status: 'Active',
+            xp: 0,
+            level: 0,
+            badges: [],
+            completedModules: [],
+            password: 'user', // Default
+            lastLogin: 'Never'
+        };
+        
+        const users = this.core.store.getUsers();
+        users.push(newUser);
+        this.core.store.saveUsers(users);
+        alert(`Account Created.\nID: ${id}\nPass: user`);
+    }
+
+    shakeForm() {
+        const form = document.querySelector('.auth-card');
+        form.style.animation = 'none';
+        form.offsetHeight; /* Trigger reflow */
+        form.style.animation = 'shake 0.5s';
+    }
+}
+
+/* ==========================================================================================
+   6.0 ROUTING ENGINE
+   ========================================================================================== */
+class Router {
+    constructor(core) {
+        this.core = core;
+        this.currentView = null;
+    }
+
+    loadView(viewId) {
+        // Hide all top-level views (Auth / App)
+        document.querySelectorAll('body > section, body > div[id^="view-"]').forEach(el => {
+            el.style.display = 'none';
         });
+        
+        // Show target
+        const target = document.getElementById(viewId);
+        if (target) {
+            target.style.display = viewId === 'view-auth' ? 'flex' : 'grid';
+            
+            // If loading app, default to dashboard sub-view
+            if (viewId === 'view-app') {
+                this.navigate('dashboard');
+            }
+        }
     }
 
-    populateInventory() {
-        const tbody = document.getElementById('inv-table-body');
-        if(!tbody) return;
+    navigate(pageId) {
+        // Handle Sidebar Highlights
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const activeNav = document.querySelector(`.nav-item[onclick*="${pageId}"]`);
+        if (activeNav) activeNav.classList.add('active');
+
+        // Hide all page views
+        document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
         
-        tbody.innerHTML = DB_INVENTORY.map(item => `
+        // Show target page
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            
+            // Update Breadcrumbs
+            const breadcrumb = document.getElementById('page-title');
+            breadcrumb.innerText = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+            
+            // Specific Load Actions
+            if (pageId === 'admin') this.core.admin.renderUsers();
+            if (pageId === 'dashboard') this.core.ui.renderDashboard();
+            if (pageId === 'profile') this.core.ui.renderProfile();
+        }
+    }
+}
+
+/* ==========================================================================================
+   7.0 GAMIFICATION SYSTEM
+   ========================================================================================== */
+class GamificationEngine {
+    constructor(core) {
+        this.core = core;
+    }
+
+    awardXP(amount) {
+        const user = this.core.store.currentUser;
+        const oldLevel = user.level;
+        
+        user.xp += amount;
+        
+        // Level Calc (Simple linear: 1000xp per level)
+        const newLevel = Math.floor(user.xp / CONFIG.gameSettings.levelThreshold);
+        
+        // Save
+        this.updateUserRecord(user);
+        this.core.ui.updateHUD(); // Refresh UI
+        
+        // Notifications
+        this.showToast(`+${amount} XP Gained`, 'success');
+        
+        if (newLevel > oldLevel) {
+            user.level = newLevel;
+            this.updateUserRecord(user);
+            this.showLevelUpModal(newLevel);
+        }
+    }
+
+    awardBadge(badgeId) {
+        const user = this.core.store.currentUser;
+        if (!user.badges.includes(badgeId)) {
+            user.badges.push(badgeId);
+            this.updateUserRecord(user);
+            const badge = SEED_BADGES[badgeId];
+            this.showToast(`Badge Unlocked: ${badge.name}`, 'gold');
+        }
+    }
+
+    updateUserRecord(updatedUser) {
+        // Update Session
+        this.core.store.setSession(updatedUser);
+        
+        // Update Database
+        const users = this.core.store.getUsers();
+        const index = users.findIndex(u => u.id === updatedUser.id);
+        if (index !== -1) {
+            users[index] = updatedUser;
+            this.core.store.saveUsers(users);
+        }
+    }
+
+    showToast(msg, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let icon = '';
+        if (type === 'success') icon = '<svg class="icon"><use href="#icon-check"></use></svg>';
+        if (type === 'gold') icon = '<svg class="icon"><use href="#icon-award"></use></svg>';
+        
+        toast.innerHTML = `${icon} <span>${msg}</span>`;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.5s forwards';
+            setTimeout(() => toast.remove(), 500);
+        }, CONFIG.ui.toastDuration);
+    }
+
+    showLevelUpModal(level) {
+        document.getElementById('lvl-up-num').innerText = level;
+        document.getElementById('modal-levelup').classList.add('active');
+        // Confetti effect logic could go here
+    }
+}
+
+/* ==========================================================================================
+   8.0 MODULE RENDERER & TASK ENGINE
+   ========================================================================================== */
+class TaskEngine {
+    constructor(core) {
+        this.core = core;
+        this.activeModule = null;
+        this.currentStep = 0;
+    }
+
+    start(moduleId) {
+        const module = SEED_MODULES[moduleId];
+        if (!module) return alert("Module Data Missing");
+
+        this.activeModule = module;
+        this.currentStep = 0;
+        
+        // Render Task Runner UI
+        document.getElementById('run-task-id').innerText = module.id.toUpperCase();
+        document.getElementById('run-task-title').innerText = module.title;
+        document.getElementById('run-task-xp').innerText = module.xpReward;
+        
+        this.renderStep();
+        this.renderTOC();
+        
+        // Navigate
+        this.core.router.navigate('task');
+    }
+
+    renderStep() {
+        const step = this.activeModule.steps[this.currentStep];
+        const total = this.activeModule.steps.length;
+        const container = document.getElementById('run-task-body');
+        
+        // Build HTML
+        let html = `
+            <div class="task-step-content fade-in">
+                <div class="step-header">
+                    <span class="step-badge">Step ${this.currentStep + 1} of ${total}</span>
+                    <h3>${step.title}</h3>
+                </div>
+                <div class="step-text">${step.content}</div>
+        `;
+        
+        if (step.tip) {
+            html += `
+                <div class="step-tip">
+                    <svg class="icon"><use href="#icon-bell"></use></svg>
+                    <div><strong>PRO TIP:</strong> ${step.tip}</div>
+                </div>
+            `;
+        }
+        
+        html += `</div>`;
+        container.innerHTML = html;
+
+        // Update Progress Bar
+        const pct = ((this.currentStep) / (total - 1)) * 100;
+        document.getElementById('run-prog-bar').style.width = (this.currentStep === 0 ? 5 : pct) + '%';
+
+        // Button States
+        const btnFinish = document.getElementById('btn-complete-task');
+        if (this.currentStep === total - 1) {
+            btnFinish.classList.remove('hidden');
+        } else {
+            btnFinish.classList.add('hidden');
+        }
+    }
+
+    renderTOC() {
+        const list = document.getElementById('run-task-steps-list');
+        list.innerHTML = this.activeModule.steps.map((s, i) => `
+            <li class="${i === this.currentStep ? 'active' : ''}" onclick="Nexus.task.jumpTo(${i})">
+                <span class="toc-num">${i+1}</span>
+                <span class="toc-title">${s.title}</span>
+            </li>
+        `).join('');
+    }
+
+    nextStep() {
+        if (this.currentStep < this.activeModule.steps.length - 1) {
+            this.currentStep++;
+            this.renderStep();
+            this.renderTOC();
+        }
+    }
+
+    prevStep() {
+        if (this.currentStep > 0) {
+            this.currentStep--;
+            this.renderStep();
+            this.renderTOC();
+        }
+    }
+
+    jumpTo(index) {
+        this.currentStep = index;
+        this.renderStep();
+        this.renderTOC();
+    }
+
+    complete() {
+        const user = this.core.store.currentUser;
+        
+        if (user.completedModules.includes(this.activeModule.id)) {
+            this.core.game.showToast("Module already completed. No XP awarded.", "warning");
+        } else {
+            // New Completion
+            user.completedModules.push(this.activeModule.id);
+            this.core.game.awardXP(this.activeModule.xpReward);
+            
+            // Check for specific badges
+            if (this.activeModule.category === 'Receipts' && user.completedModules.includes('mjdi_01')) {
+                this.core.game.awardBadge('core_cert');
+            }
+        }
+        
+        // Return to Hub
+        this.core.router.navigate('modules');
+    }
+}
+
+/* ==========================================================================================
+   9.0 ADMINISTRATION CONSOLE
+   ========================================================================================== */
+class AdminController {
+    constructor(core) {
+        this.core = core;
+    }
+
+    // Tab Switching Logic
+    tab(tabName) {
+        document.querySelectorAll('.adm-tab-view').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.adm-tab').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`adm-view-${tabName}`).classList.add('active');
+        // Find the button that called this and activate it (passed via event usually, simplified here)
+    }
+
+    // User Table
+    renderUsers() {
+        const users = this.core.store.getUsers();
+        const tbody = document.getElementById('admin-user-table').querySelector('tbody');
+        
+        tbody.innerHTML = users.map(u => `
             <tr>
-                <td style="font-family:var(--font-mono)">${item.nsn}</td>
-                <td>${item.desc}</td>
-                <td>${item.doq}</td>
-                <td>${item.loc}</td>
-                <td>${item.qty}</td>
-                <td><span class="status-badge ${item.status === 'SVC' ? 'ok' : 'low'}">${item.status}</span></td>
-                <td><button class="btn-sm" onclick="alert('Details for ${item.nsn}')">View</button></td>
+                <td style="font-family:var(--font-mono)">${u.id}</td>
+                <td>
+                    <div class="user-cell">
+                        <div class="avatar-small">${u.initials}</div>
+                        <div>${u.name}</div>
+                    </div>
+                </td>
+                <td><span class="role-badge ${u.role.toLowerCase()}">${u.role}</span></td>
+                <td>${u.xp}</td>
+                <td><span class="status-badge ${u.status.toLowerCase()}">${u.status}</span></td>
+                <td>
+                    <button class="btn-icon" onclick="Nexus.admin.editUser('${u.id}')">
+                        <svg class="icon"><use href="#icon-settings"></use></svg>
+                    </button>
+                </td>
             </tr>
         `).join('');
     }
-}
 
-// --- 3. MODULES ---
-
-class Router {
-    constructor() {
-        this.views = document.querySelectorAll('.view-panel');
-        this.navItems = document.querySelectorAll('.nav-item');
+    // Modal Logic
+    openUserModal() {
+        document.getElementById('modal-user-edit').classList.add('active');
+        document.getElementById('adm-user-form').reset();
+        document.getElementById('modal-user-title').innerText = "Add New User";
+        document.getElementById('adm-edit-id').value = ""; // Empty for new
     }
 
-    navigate(viewId) {
-        // Hide all views
-        this.views.forEach(v => v.classList.remove('active'));
-        this.navItems.forEach(n => n.classList.remove('active'));
-
-        // Show target
-        const targetView = document.getElementById(`view-${viewId}`);
-        const dashboard = document.getElementById('view-dashboard');
-
-        if (targetView) {
-            targetView.classList.add('active');
-        } else {
-            // Fallback for anchor links inside dashboard
-            dashboard.classList.add('active');
-            const anchor = document.getElementById(`guide-${viewId}`);
-            if (anchor) anchor.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Update sidebar highlight
-        const activeNav = document.querySelector(`.nav-item[href="#${viewId}"]`);
-        if (activeNav) activeNav.classList.add('active');
-    }
-}
-
-class WalkthroughModule {
-    constructor() {
-        this.overlay = document.getElementById('overlay-cinema');
-        this.data = null;
-        this.index = 0;
-        this.els = {
-            title: document.getElementById('wt-title'),
-            img: document.getElementById('wt-img'),
-            stepNum: document.getElementById('wt-step-num'),
-            stepTitle: document.getElementById('wt-step-title'),
-            stepDesc: document.getElementById('wt-step-desc'),
-            tip: document.getElementById('wt-tip-text'),
-            bar: document.getElementById('wt-progress'),
-            timeline: document.getElementById('wt-timeline')
-        };
-    }
-
-    start(id) {
-        if (!DB_WALKTHROUGHS[id]) return alert("Module data not found");
-        this.data = DB_WALKTHROUGHS[id];
-        this.index = 0;
-        this.overlay.classList.add('active');
-        this.render();
-    }
-
-    close() {
-        this.overlay.classList.remove('active');
-    }
-
-    next() {
-        if (this.index < this.data.steps.length - 1) {
-            this.index++;
-            this.render();
-        } else {
-            this.close();
-            // Trigger XP
-            const xpEl = document.getElementById('user-xp-display');
-            let curr = parseInt(xpEl.innerText);
-            xpEl.innerText = curr + 150;
-            alert("MODULE COMPLETE: +150 XP");
-        }
-    }
-
-    prev() {
-        if (this.index > 0) {
-            this.index--;
-            this.render();
-        }
-    }
-
-    render() {
-        const step = this.data.steps[this.index];
-        const total = this.data.steps.length;
-
-        this.els.title.innerText = this.data.title;
-        this.els.img.src = step.img;
-        this.els.stepNum.innerText = `Step ${this.index + 1} of ${total}`;
-        this.els.stepTitle.innerText = step.title;
-        this.els.stepDesc.innerText = step.desc;
-        this.els.tip.innerText = step.tip || "No tip for this step.";
+    editUser(id) {
+        const user = this.core.store.getUser(id);
+        if (!user) return;
         
-        // Progress Bar
-        const pct = ((this.index + 1) / total) * 100;
-        this.els.bar.style.width = `${pct}%`;
-
-        // Timeline Dots
-        this.els.timeline.innerHTML = this.data.steps.map((_, i) => 
-            `<div class="timeline-dot ${i === this.index ? 'active' : ''}"></div>`
-        ).join('');
+        document.getElementById('modal-user-edit').classList.add('active');
+        document.getElementById('modal-user-title').innerText = `Edit: ${user.name}`;
+        
+        document.getElementById('adm-edit-id').value = user.id;
+        document.getElementById('adm-edit-name').value = user.name;
+        document.getElementById('adm-edit-role').value = user.role;
+        document.getElementById('adm-edit-xp').value = user.xp;
+        document.getElementById('adm-edit-status').value = user.status;
     }
-}
 
-class AdminModule {
-    constructor() {
-        this.overlay = document.getElementById('overlay-admin');
-    }
-    open() {
-        const pin = prompt("ENTER ADMIN PIN:");
-        if (pin === "1134") {
-            this.overlay.classList.add('active');
+    saveUser() {
+        const id = document.getElementById('adm-edit-id').value;
+        const name = document.getElementById('adm-edit-name').value;
+        const role = document.getElementById('adm-edit-role').value;
+        const xp = parseInt(document.getElementById('adm-edit-xp').value) || 0;
+        const status = document.getElementById('adm-edit-status').value;
+        
+        const users = this.core.store.getUsers();
+        
+        if (id) {
+            // Update
+            const idx = users.findIndex(u => u.id === id);
+            if (idx !== -1) {
+                users[idx] = { ...users[idx], name, role, xp, status };
+            }
         } else {
-            alert("ACCESS DENIED");
+            // Create
+            const newId = Math.floor(30000000 + Math.random() * 900000).toString();
+            users.push({
+                id: newId,
+                name, role, status, xp,
+                level: Math.floor(xp / 1000),
+                badges: [],
+                completedModules: [],
+                password: 'user',
+                initials: name.substr(0,2).toUpperCase(),
+                lastLogin: 'Never'
+            });
+        }
+        
+        this.core.store.saveUsers(users);
+        this.core.ui.closeModal('modal-user-edit');
+        this.renderUsers();
+        this.core.game.showToast('User Database Updated', 'success');
+    }
+
+    resetDB() {
+        if(confirm("CRITICAL WARNING: This will wipe all user progress and reset to factory defaults. Proceed?")) {
+            localStorage.clear();
+            location.reload();
         }
     }
-    close() { this.overlay.classList.remove('active'); }
-    switchTab(tabId) {
-        document.querySelectorAll('.adm-tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.adm-link').forEach(l => l.classList.remove('active'));
-        document.getElementById(`adm-tab-${tabId}`).classList.add('active');
-        event.target.classList.add('active');
-    }
 }
 
-class VitalModule {
-    constructor() {
-        this.term = document.getElementById('vital-terminal');
-        this.input = document.getElementById('vital-input');
-    }
-    input(cmd) {
-        this.print(`KEY_PRESS: ${cmd}`);
-        if(cmd === 'F1') this.print("HELP: LIST, CLEAR, EXIT, CHECK <PKG>");
-        if(cmd === 'F3') Nexus.router.navigate('dashboard');
-    }
-    submit() {
-        const val = this.input.value.toUpperCase();
-        this.input.value = '';
-        this.print(`> ${val}`);
-        
-        if (val === 'LIST') this.print("PKG 001: HELD\nPKG 002: ISSUED");
-        else if (val === 'CLEAR') this.term.innerHTML = '<div class="term-line prompt">> <span id="vital-cursor" class="cursor">_</span></div>';
-        else this.print("UNKNOWN COMMAND");
-    }
-    print(txt) {
-        const div = document.createElement('div');
-        div.className = 'term-line';
-        div.innerText = txt;
-        this.term.insertBefore(div, this.term.lastElementChild);
-        this.term.scrollTop = this.term.scrollHeight;
-    }
-}
-
-class CommandModule {
-    constructor() {
-        this.overlay = document.getElementById('overlay-cmd');
+/* ==========================================================================================
+   10.0 COMMAND PALETTE & SEARCH
+   ========================================================================================== */
+class CommandPalette {
+    constructor(core) {
+        this.core = core;
+        this.overlay = document.getElementById('modal-cmd');
         this.input = document.getElementById('cmd-input');
         this.results = document.getElementById('cmd-results');
+        
+        // Search Data Source
+        this.index = [
+            { t: 'Receipts Guide', d: 'View U010 Module', fn: () => this.core.router.navigate('modules') },
+            { t: 'Dashboard', d: 'Go Home', fn: () => this.core.router.navigate('dashboard') },
+            { t: 'Profile', d: 'View My Stats', fn: () => this.core.router.navigate('profile') },
+            { t: 'Log Out', d: 'Exit System', fn: () => this.core.auth.logout() },
+            { t: 'Admin', d: 'System Configuration', fn: () => this.core.router.navigate('admin') },
+            { t: 'Issues', d: 'View AinU Module', fn: () => this.core.router.navigate('modules') }
+        ];
+
         this.input.addEventListener('input', (e) => this.search(e.target.value));
     }
+
     open() {
         this.overlay.classList.add('active');
         this.input.value = '';
         this.input.focus();
         this.search('');
     }
-    close() { this.overlay.classList.remove('active'); }
-    search(q) {
-        const term = q.toLowerCase();
-        const matches = DB_SEARCH.filter(i => i.label.toLowerCase().includes(term));
+
+    close() {
+        this.overlay.classList.remove('active');
+    }
+
+    search(query) {
+        const q = query.toLowerCase();
+        const matches = this.index.filter(i => i.t.toLowerCase().includes(q) || i.d.toLowerCase().includes(q));
         
         this.results.innerHTML = matches.map(m => `
-            <div class="cmd-item" onclick="Nexus.cmd.exec('${m.action}')">
-                <span class="cmd-main">${m.label}</span>
-                <span class="cmd-sub">${m.meta}</span>
+            <div class="cmd-item">
+                <div class="cmd-text">
+                    <div class="cmd-main">${m.t}</div>
+                    <div class="cmd-sub">${m.d}</div>
+                </div>
+                <div class="cmd-hint">↵</div>
             </div>
         `).join('');
-    }
-    exec(actionStr) {
-        const [type, val] = actionStr.split(':');
-        if (type === 'route') Nexus.router.navigate(val);
-        if (type === 'func') {
-            if(val === 'admin') Nexus.admin.open();
-            if(val === 'theme') Nexus.theme.toggle();
-        }
-        this.close();
-    }
-}
-
-class ThemeModule {
-    toggle() {
-        const cur = document.documentElement.getAttribute('data-theme');
-        document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+        
+        // Add click listeners
+        const items = this.results.querySelectorAll('.cmd-item');
+        items.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                matches[index].fn();
+                this.close();
+            });
+        });
     }
 }
 
-class UIModule {
+/* ==========================================================================================
+   11.0 UI UTILITIES
+   ========================================================================================== */
+class UIManager {
+    constructor(core) {
+        this.core = core;
+    }
+
     toggleSidebar() {
-        document.getElementById('main-sidebar').classList.toggle('open');
+        document.getElementById('main-sidebar').classList.toggle('mobile-open');
+    }
+
+    toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('nexus_theme', next);
+    }
+
+    closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    updateHUD() {
+        const u = this.core.store.currentUser;
+        if (!u) return;
+
+        // Sidebar HUD
+        document.getElementById('hud-name').innerText = u.name;
+        document.getElementById('hud-initials').innerText = u.initials;
+        document.getElementById('hud-level').innerText = u.level;
+        document.getElementById('hud-xp-text').innerText = `${u.xp} / ${CONFIG.gameSettings.levelThreshold * (u.level + 1)}`;
+        
+        const xpPct = (u.xp % CONFIG.gameSettings.levelThreshold) / 10;
+        document.getElementById('hud-xp-bar').style.width = `${xpPct}%`;
+        
+        // Sidebar Role
+        document.getElementById('sidebar-role-display').innerText = u.role;
+    }
+
+    renderDashboard() {
+        const u = this.core.store.currentUser;
+        document.getElementById('dash-user-name').innerText = u.name;
+        
+        // Compliance Math
+        const totalModules = Object.keys(SEED_MODULES).length;
+        const done = u.completedModules.length;
+        const pct = Math.floor((done / totalModules) * 100);
+        
+        document.getElementById('dash-compliance').innerText = `${pct}%`;
+        document.getElementById('completion-text').innerText = `${pct}%`;
+        document.getElementById('completion-chart').style.setProperty('--p', pct);
+        
+        // Stats
+        document.getElementById('stat-modules-count').innerText = totalModules;
+        document.getElementById('stat-xp-count').innerText = u.xp;
+        document.getElementById('stat-completed-count').innerText = done;
+        
+        // Populate Task List
+        const list = document.getElementById('dash-task-list');
+        list.innerHTML = '';
+        
+        let pendingCount = 0;
+        
+        for (const [key, mod] of Object.entries(SEED_MODULES)) {
+            const isDone = u.completedModules.includes(key);
+            if (!isDone && pendingCount < 3) {
+                pendingCount++;
+                list.innerHTML += `
+                    <div class="task-card" onclick="Nexus.task.start('${key}')">
+                        <div class="task-info">
+                            <h4>${mod.title}</h4>
+                            <div class="task-tags">
+                                <span>${mod.category}</span>
+                                <span class="tag-xp">+${mod.xpReward} XP</span>
+                            </div>
+                        </div>
+                        <button class="btn-icon"><svg class="icon"><use href="#icon-play"></use></svg></button>
+                    </div>
+                `;
+            }
+        }
+        
+        if (pendingCount === 0) {
+            list.innerHTML = '<div class="empty-state">All recommended training completed!</div>';
+        }
+        
+        document.getElementById('pending-tasks-count').innerText = totalModules - done;
+    }
+
+    renderModuleGrid() {
+        const container = document.getElementById('modules-grid');
+        container.innerHTML = '';
+        
+        for (const [key, mod] of Object.entries(SEED_MODULES)) {
+            const isDone = this.core.store.currentUser.completedModules.includes(key);
+            
+            container.innerHTML += `
+                <div class="module-card ${isDone ? 'completed' : ''}">
+                    <div class="card-thumb" style="background: linear-gradient(45deg, #1e293b, #0f172a);">
+                        <span class="card-badge">${mod.difficulty}</span>
+                        ${isDone ? '<div class="completed-overlay"><svg class="icon"><use href="#icon-check"></use></svg></div>' : ''}
+                    </div>
+                    <div class="card-body">
+                        <h3>${mod.title}</h3>
+                        <p>${mod.description}</p>
+                        <div class="card-meta">
+                            <span><svg class="icon"><use href="#icon-award"></use></svg> ${mod.xpReward} XP</span>
+                            <span><svg class="icon"><use href="#icon-book"></use></svg> ${mod.steps.length} Steps</span>
+                        </div>
+                        <button class="btn btn-brand full" onclick="Nexus.task.start('${key}')">
+                            ${isDone ? 'Review Module' : 'Start Module'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    renderProfile() {
+        // Implementation for profile view would go here similar to dashboard
+        // Populating badge grid, history list, etc.
     }
 }
 
-class Utilities {
-    copy(btn) {
-        // Mock copy
-        const orig = btn.innerText;
-        btn.innerText = "Copied!";
-        setTimeout(() => btn.innerText = orig, 1000);
-    }
-}
-
-// --- BOOT SYSTEM ---
-window.Nexus = new NexusController();
+/* ==========================================================================================
+   INITIALIZATION
+   ========================================================================================== */
+// Initialize the Nexus System globally
+window.Nexus = new NexusCore();
