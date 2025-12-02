@@ -1,125 +1,223 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en-GB" data-theme="dark" class="nexus-os">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="LSS TEST - Enterprise Logistics Operations Platform">
-    <meta name="author" content="Sgt K. Kirby">
-    <title>LSS TEST | Logistics Command Console</title>
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="LSS GUIDE - Enterprise Logistics Operations & Learning Management System. Authorized Access Only.">
+    <meta name="author" content="Sgt K. Kirby | RLC Development Wing">
+    <meta name="application-name" content="LSS NEXUS v9.0">
+    <meta name="theme-color" content="#0f172a">
+
+    <title>LSS NEXUS | Operations Command Console</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="booting">
+<body class="state-booting">
 
-    <svg style="display: none;">
-        <symbol id="icon-grid" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zM3 14h7v7H3v-7z"/></symbol>
-        <symbol id="icon-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
-        <symbol id="icon-box" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <svg style="display: none;" aria-hidden="true">
+        <symbol id="icon-dashboard" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3h8v8h-8V3zm0 10h8v8h-8v-8zM3 3h8v8H3V3zm0 10h8v8H3v-8z"/></symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol>
+        <symbol id="icon-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
         
         <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
         <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
         <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-        
-        <symbol id="icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></symbol>
-        <symbol id="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></symbol>
-        <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
         <symbol id="icon-chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
         <symbol id="icon-chevron-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-        
         <symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
         <symbol id="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-        <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12.01" y2="8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-        <symbol id="icon-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="19" x2="20" y2="19" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2"/><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        
+        <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        
+        <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        
+        <symbol id="icon-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-truck" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="5.5" cy="18.5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18.5" cy="18.5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-clipboard" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12.01" y2="16" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="icon-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     </svg>
 
-    <div id="sys-boot-layer">
-        <div class="boot-container">
-            <div class="boot-logo">
-                <div class="logo-spinner"></div>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Cap_Badge_of_the_RLC.png" alt="RLC Crest">
+    <div id="toast-container" class="toast-wrapper">
+        </div>
+
+    <section id="view-auth" class="auth-wrapper" style="display: flex;">
+        
+        <div class="auth-bg-layer">
+            <div class="grid-overlay"></div>
+            <div class="radar-scan"></div>
+        </div>
+
+        <div class="auth-split-layout">
+            
+            <div class="auth-visual-side">
+                <div class="auth-visual-content">
+                    <div class="brand-large">
+                        <div class="logo-box">N</div>
+                        <h1>LSS GUIDE</h1>
+                    </div>
+                    <h2>OPERATIONS & LEARNING<br>MANAGEMENT SYSTEM</h2>
+                    <div class="auth-badges">
+                        <span class="auth-badge badge-version">v9.0.1 Stable</span>
+                        <span class="auth-badge badge-sec">Unclassified</span>
+                        <span class="auth-badge badge-auth">RLC Authorized</span>
+                    </div>
+                    <div class="auth-news">
+                        <h3>System Notices</h3>
+                        <ul>
+                            <li><span class="news-date">04 DEC</span> MJDI Maintenance Scheduled 2200hrs.</li>
+                            <li><span class="news-date">02 DEC</span> New Module: Hazardous Materiel Handling.</li>
+                            <li><span class="news-date">28 NOV</span> VITAL Simulator Updated to v4.2.</li>
+                        </ul>
+                    </div>
+                    <p class="auth-disclaimer">
+                        WARNING: This system is for authorized Defence Logistics personnel only. 
+                        Unauthorized access is a disciplinary offence. All actions are logged and audited.
+                    </p>
+                </div>
             </div>
-            <div class="boot-terminal" id="boot-log">
-                <div class="log-line">INITIALIZING LSS TEST KERNEL v7.0...</div>
-            </div>
-            <div class="boot-progress-track">
-                <div class="boot-progress-bar" id="boot-bar"></div>
-            </div>
-            <div class="boot-meta">
-                <span>SECURE CONNECTION</span>
-                <span>MOD NETWORK: ACTIVE</span>
+
+            <div class="auth-form-side">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Cap_Badge_of_the_RLC.png" alt="RLC Logo" class="auth-form-logo">
+                        <h3>Identify User</h3>
+                        <p>Enter your Service credentials to proceed.</p>
+                    </div>
+
+                    <form id="login-form" onsubmit="event.preventDefault(); Nexus.auth.login();">
+                        <div class="form-group">
+                            <label for="login-user">Service Number / ID</label>
+                            <div class="input-wrapper">
+                                <svg class="icon"><use href="#icon-users"></use></svg>
+                                <input type="text" id="login-user" placeholder="e.g. 30123456" required autocomplete="username">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-pass">Password</label>
+                            <div class="input-wrapper">
+                                <svg class="icon"><use href="#icon-lock"></use></svg>
+                                <input type="password" id="login-pass" placeholder="••••••••" required autocomplete="current-password">
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" checked>
+                                <span class="checkmark"></span>
+                                Remember ID
+                            </label>
+                            <a href="#" class="forgot-link" onclick="Nexus.ui.toast('Contact Unit SysAdmin', 'info')">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-full btn-brand btn-lg">
+                            <span>Authenticate</span>
+                            <svg class="icon"><use href="#icon-chevron-right"></use></svg>
+                        </button>
+                    </form>
+
+                    <div class="auth-register-prompt">
+                        <span>New posting?</span>
+                        <button class="btn-text" onclick="Nexus.auth.toggleRegister()">Create Account</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="app-shell" class="hidden">
+    <div id="view-app" class="app-shell" style="display: none;">
         
         <aside class="sidebar" id="main-sidebar">
             <div class="sidebar-header">
                 <div class="brand-lockup">
                     <div class="brand-logo">N</div>
                     <div class="brand-info">
-                        <span class="brand-name">LSS TEST</span>
-                        <span class="brand-role">System Admin</span>
+                        <span class="brand-name">LSS GUIDE</span>
+                        <span class="brand-role" id="sidebar-role-display">Guest</span>
+                    </div>
+                </div>
+                <button class="mobile-close-btn" onclick="Nexus.ui.toggleSidebar()">
+                    <svg class="icon"><use href="#icon-close"></use></svg>
+                </button>
+            </div>
+
+            <div class="user-hud-widget">
+                <div class="hud-top">
+                    <div class="avatar-ring">
+                        <span id="hud-initials">SK</span>
+                        <div class="level-badge" id="hud-level">1</div>
+                    </div>
+                    <div class="hud-user-info">
+                        <div class="user-name" id="hud-name">Sgt Kirby</div>
+                        <div class="user-status">Active Duty</div>
+                    </div>
+                </div>
+                <div class="hud-xp-container">
+                    <div class="xp-label">
+                        <span>Progress to Next Rank</span>
+                        <span id="hud-xp-text">0 / 1000 XP</span>
+                    </div>
+                    <div class="xp-track">
+                        <div class="xp-fill" id="hud-xp-bar" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="user-hud">
-                <div class="hud-ring-container">
-                    <svg class="hud-ring" viewBox="0 0 36 36">
-                        <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <path class="ring-fill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
-                    <span class="hud-level">05</span>
-                </div>
-                <div class="hud-details">
-                    <span class="hud-user">Sgt K. Kirby</span>
-                    <span class="hud-xp"><span id="user-xp-display">1250</span> / 2000 XP</span>
-                </div>
-            </div>
-
-            <button class="cmd-palette-trigger" onclick="TEST.cmd.open()">
+            <button class="cmd-palette-trigger" onclick="Nexus.cmd.open()">
                 <div class="icon-box"><svg class="icon"><use href="#icon-search"></use></svg></div>
-                <span>Command Palette</span>
-                <kbd>⌘K</kbd>
+                <div class="text-box">
+                    <span>Quick Search...</span>
+                    <kbd>⌘K</kbd>
+                </div>
             </button>
 
-            <nav class="nav-tree" id="nav-root">
-                <div class="nav-section-label">OPERATIONS</div>
-                <a href="#dashboard" class="nav-item active" onclick="TEST.router.navigate('dashboard')">
-                    <svg class="icon"><use href="#icon-grid"></use></svg>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#inventory" class="nav-item" onclick="TEST.router.navigate('inventory')">
-                    <svg class="icon"><use href="#icon-list"></use></svg>
-                    <span>Inventory (MJDI)</span>
-                </a>
-                <a href="#receipts" class="nav-item" onclick="TEST.router.navigate('receipts')">
-                    <svg class="icon"><use href="#icon-box"></use></svg>
-                    <span>Receipts (U010)</span>
-                </a>
+            <nav class="nav-menu" id="nav-root">
+                <div class="nav-label">OPERATIONS</div>
                 
-                <div class="nav-section-label">SIMULATIONS</div>
-                <a href="#vital" class="nav-item" onclick="TEST.router.navigate('vital')">
-                    <svg class="icon"><use href="#icon-terminal"></use></svg>
-                    <span>VITAL Terminal</span>
-                </a>
+                <button class="nav-item active" data-target="dashboard" onclick="Nexus.router.navigate('dashboard')">
+                    <svg class="icon"><use href="#icon-dashboard"></use></svg>
+                    <span>Dashboard</span>
+                </button>
+                
+                <button class="nav-item" data-target="modules" onclick="Nexus.router.navigate('modules')">
+                    <svg class="icon"><use href="#icon-book"></use></svg>
+                    <span>Training Modules</span>
+                </button>
 
-                <div class="nav-section-label">ADMINISTRATION</div>
-                <a href="#" class="nav-item" onclick="TEST.admin.open()">
-                    <svg class="icon"><use href="#icon-settings"></use></svg>
-                    <span>System Config</span>
-                </a>
+                <div class="nav-label">TOOLS</div>
+                
+                <button class="nav-item" data-target="profile" onclick="Nexus.router.navigate('profile')">
+                    <svg class="icon"><use href="#icon-users"></use></svg>
+                    <span>My Profile</span>
+                </button>
+
+                <div id="admin-nav-section" style="display:none;">
+                    <div class="nav-label">ADMINISTRATION</div>
+                    <button class="nav-item" data-target="admin" onclick="Nexus.router.navigate('admin')">
+                        <svg class="icon"><use href="#icon-settings"></use></svg>
+                        <span>System Console</span>
+                    </button>
+                </div>
             </nav>
 
             <div class="sidebar-footer">
-                <button class="theme-toggle" onclick="TEST.theme.toggle()">
-                    <span class="theme-text">Toggle Theme</span>
-                    <div class="theme-icon"></div>
+                <button class="nav-item danger" onclick="Nexus.auth.logout()">
+                    <svg class="icon"><use href="#icon-logout"></use></svg>
+                    <span>Sign Out</span>
                 </button>
+                <div class="sys-version">Build 9.0.21</div>
             </div>
         </aside>
 
@@ -127,197 +225,358 @@
             
             <header class="topbar">
                 <div class="topbar-left">
-                    <button class="mobile-menu-toggle" onclick="TEST.ui.toggleSidebar()">
-                        <svg class="icon"><use href="#icon-list"></use></svg>
+                    <button class="mobile-menu-toggle" onclick="Nexus.ui.toggleSidebar()">
+                        <svg class="icon"><use href="#icon-menu"></use></svg>
                     </button>
                     <div class="breadcrumbs" id="breadcrumbs">
-                        <span class="crumb-root">TEST</span>
+                        <span class="crumb-root">Nexus</span>
                         <span class="crumb-sep">/</span>
-                        <span class="crumb-active">Dashboard</span>
+                        <span class="crumb-active" id="page-title">Dashboard</span>
                     </div>
                 </div>
                 <div class="topbar-right">
                     <div class="sys-status">
-                        <span class="status-dot"></span>
-                        <span class="status-text">ONLINE</span>
+                        <span class="status-dot online"></span>
+                        <span class="status-text">SYSTEM ONLINE</span>
                     </div>
-                    <button class="notif-btn">
+                    <button class="icon-btn" onclick="Nexus.ui.toggleTheme()">
+                        <svg class="icon"><use href="#icon-settings"></use></svg>
+                    </button>
+                    <button class="icon-btn relative">
                         <svg class="icon"><use href="#icon-bell"></use></svg>
-                        <span class="notif-badge">3</span>
+                        <span class="badge-dot"></span>
                     </button>
                 </div>
             </header>
 
-            <div id="view-container" class="view-stage">
+            <div class="content-scroll" id="content-area">
                 
-                <div class="view-panel active" id="view-dashboard">
-                    <div class="content-wrapper">
-                        
-                        <article class="hero-card">
-                            <div class="hero-bg-pattern"></div>
-                            <div class="hero-body">
-                                <div class="hero-badges">
-                                    <span class="badge gold">LSS Core</span>
-                                    <span class="badge blue">Training</span>
-                                </div>
-                                <h1>Operations Dashboard</h1>
-                                <p>Welcome back, Sgt Kirby. System integrity is at 100%. You have 3 pending tasks in the VITAL queue and 12 outstanding U010 receipts.</p>
-                                <div class="hero-actions">
-                                    <button class="btn btn-primary" onclick="TEST.walkthrough.start('receipts')">
-                                        <svg class="icon"><use href="#icon-play"></use></svg>
-                                        Start Receipt Guide
-                                    </button>
-                                    <button class="btn btn-secondary" onclick="TEST.router.navigate('vital')">
-                                        Open VITAL
-                                    </button>
-                                </div>
+                <div id="page-dashboard" class="page-view active">
+                    <div class="hero-banner">
+                        <div class="hero-bg-overlay"></div>
+                        <div class="hero-content">
+                            <div class="hero-text">
+                                <h1>Operational Readiness</h1>
+                                <p>Welcome, <span id="dash-user-name">User</span>. Your training compliance is currently at <span id="dash-compliance">0%</span>. Review your pending modules below.</p>
                             </div>
-                        </article>
-
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-icon blue"><svg class="icon"><use href="#icon-box"></use></svg></div>
-                                <div class="stat-data">
-                                    <span class="stat-value">1,240</span>
-                                    <span class="stat-label">Stock Items</span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon green"><svg class="icon"><use href="#icon-check"></use></svg></div>
-                                <div class="stat-data">
-                                    <span class="stat-value">98%</span>
-                                    <span class="stat-label">Account Accuracy</span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon gold"><svg class="icon"><use href="#icon-terminal"></use></svg></div>
-                                <div class="stat-data">
-                                    <span class="stat-value">12</span>
-                                    <span class="stat-label">Pending Dues</span>
+                            <div class="hero-chart-area">
+                                <div class="chart-circle" id="completion-chart" style="--p:0">
+                                    <span id="completion-text">0%</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <section class="guide-section" id="guide-receipts">
-                            <div class="section-header">
-                                <h2>1.0 Receipts & Inbound Logistics</h2>
-                                <div class="section-meta">Updated: 2025-12-01</div>
+                    <div class="grid-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon-box blue"><svg class="icon"><use href="#icon-book"></use></svg></div>
+                            <div class="stat-info">
+                                <span class="val" id="stat-modules-count">12</span>
+                                <span class="lbl">Modules Available</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-box gold"><svg class="icon"><use href="#icon-award"></use></svg></div>
+                            <div class="stat-info">
+                                <span class="val" id="stat-xp-count">0</span>
+                                <span class="lbl">Total XP Earned</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-box green"><svg class="icon"><use href="#icon-check"></use></svg></div>
+                            <div class="stat-info">
+                                <span class="val" id="stat-completed-count">0</span>
+                                <span class="lbl">Tasks Completed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-container">
+                        <div class="section-header">
+                            <h2>Priority Tasks</h2>
+                            <button class="btn-link" onclick="Nexus.router.navigate('modules')">View All</button>
+                        </div>
+                        <div class="task-list" id="dashboard-task-list">
+                            <div class="task-item-skeleton"></div>
+                            <div class="task-item-skeleton"></div>
+                            <div class="task-item-skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-modules" class="page-view">
+                    <div class="page-head">
+                        <div class="head-text">
+                            <h2>Learning Modules</h2>
+                            <p>Select a specialized logistics topic to begin training.</p>
+                        </div>
+                        <div class="head-filter">
+                            <div class="search-input">
+                                <svg class="icon"><use href="#icon-search"></use></svg>
+                                <input type="text" placeholder="Filter modules...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modules-grid">
+                        <div class="module-card">
+                            <div class="card-thumb receipts-bg">
+                                <span class="card-badge">Core</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>MJDI Receipts</h3>
+                                <p>Mastering U010 Dues-In and U013 Local Purchase receipting processes.</p>
+                                <div class="card-meta">
+                                    <span><svg class="icon"><use href="#icon-star"></use></svg> 500 XP</span>
+                                    <span><svg class="icon"><use href="#icon-check"></use></svg> 5 Steps</span>
+                                </div>
+                                <button class="btn btn-brand full" onclick="Nexus.task.start('receipts')">Start Module</button>
+                            </div>
+                        </div>
+
+                        <div class="module-card">
+                            <div class="card-thumb issues-bg">
+                                <span class="card-badge">Core</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>MJDI Issues (AinU)</h3>
+                                <p>Correct procedures for issuing Loan and Permanent items to accounts.</p>
+                                <div class="card-meta">
+                                    <span><svg class="icon"><use href="#icon-star"></use></svg> 450 XP</span>
+                                    <span><svg class="icon"><use href="#icon-check"></use></svg> 4 Steps</span>
+                                </div>
+                                <button class="btn btn-brand full" onclick="Nexus.task.start('issues')">Start Module</button>
+                            </div>
+                        </div>
+
+                        <div class="module-card">
+                            <div class="card-thumb stock-bg">
+                                <span class="card-badge">Advanced</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>Stocktaking & S&R</h3>
+                                <p>Managing discrepancy reports (F445) and reconciliation processes.</p>
+                                <div class="card-meta">
+                                    <span><svg class="icon"><use href="#icon-star"></use></svg> 800 XP</span>
+                                    <span><svg class="icon"><use href="#icon-check"></use></svg> 8 Steps</span>
+                                </div>
+                                <button class="btn btn-brand full" onclick="Nexus.task.start('stocktake')">Start Module</button>
+                            </div>
+                        </div>
+
+                        <div class="module-card">
+                            <div class="card-thumb disposals-bg">
+                                <span class="card-badge">Advanced</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>GXD Disposals</h3>
+                                <p>Gateway Exchange Disposal processes for surplus materiel.</p>
+                                <div class="card-meta">
+                                    <span><svg class="icon"><use href="#icon-star"></use></svg> 600 XP</span>
+                                    <span><svg class="icon"><use href="#icon-check"></use></svg> 6 Steps</span>
+                                </div>
+                                <button class="btn btn-brand full" onclick="Nexus.task.start('disposals')">Start Module</button>
+                            </div>
+                        </div>
+
+                        <div class="module-card">
+                            <div class="card-thumb haz-bg">
+                                <span class="card-badge">Specialist</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>Hazardous Materiel</h3>
+                                <p>Handling, storage, and accounting for COSHH items.</p>
+                                <div class="card-meta">
+                                    <span><svg class="icon"><use href="#icon-star"></use></svg> 1000 XP</span>
+                                    <span><svg class="icon"><use href="#icon-check"></use></svg> 10 Steps</span>
+                                </div>
+                                <button class="btn btn-brand full" onclick="Nexus.task.start('hazmat')">Start Module</button>
+                            </div>
+                        </div>
+
+                        <div class="module-card">
+                            <div class="card-thumb admin-bg">
+                                <span class="card-badge">Command</span>
+                            </div>
+                            <div class="card-body">
+                                <h3>UAA Configuration</h3>
+                                <p>Unit Application Administrator settings and role management.</p>
+                                <div class="card-meta">
+                                    <span><svg class="icon"><use href="#icon-star"></use></svg> 300 XP</span>
+                                    <span><svg class="icon"><use href="#icon-check"></use></svg> 3 Steps</span>
+                                </div>
+                                <button class="btn btn-brand full" onclick="Nexus.task.start('uaa')">Start Module</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-task" class="page-view">
+                    <div class="task-runner-layout">
+                        <aside class="task-sidebar">
+                            <button class="btn-back" onclick="Nexus.router.navigate('modules')">
+                                <svg class="icon"><use href="#icon-chevron-left"></use></svg> Back to Modules
+                            </button>
+                            <div class="task-meta">
+                                <span class="task-id" id="run-task-id">LOADING...</span>
+                                <h2 id="run-task-title">Module Loading</h2>
+                                <div class="task-rewards">
+                                    <span class="reward-tag xp">+<span id="run-task-xp">0</span> XP</span>
+                                    <span class="reward-tag time">15 Mins</span>
+                                </div>
+                            </div>
+                            <div class="task-progress">
+                                <label>Completion Status</label>
+                                <div class="prog-track"><div class="prog-fill" id="run-prog-bar" style="width: 0%"></div></div>
+                            </div>
+                            <div class="task-toc">
+                                <h4>Steps</h4>
+                                <ul id="run-task-steps-list">
+                                    </ul>
+                            </div>
+                        </aside>
+
+                        <div class="task-content">
+                            <div class="task-body" id="run-task-body">
+                                <div class="empty-state-task">
+                                    <div class="spinner"></div>
+                                    <p>Loading Module Content...</p>
+                                </div>
+                            </div>
+                            <div class="task-actions-bar">
+                                <button class="btn btn-secondary" onclick="Nexus.task.prevStep()">Previous</button>
+                                <button class="btn btn-primary" onclick="Nexus.task.nextStep()">Next Step</button>
+                                <button class="btn btn-success hidden" id="btn-finish-task" onclick="Nexus.task.complete()">
+                                    <svg class="icon"><use href="#icon-check-circle"></use></svg> Complete Module
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-admin" class="page-view">
+                    <div class="admin-layout">
+                        <div class="admin-nav-strip">
+                            <div class="admin-nav-title">SYS ADMIN</div>
+                            <button class="adm-tab active" onclick="Nexus.admin.tab('users')">
+                                <svg class="icon"><use href="#icon-users"></use></svg> Users
+                            </button>
+                            <button class="adm-tab" onclick="Nexus.admin.tab('system')">
+                                <svg class="icon"><use href="#icon-settings"></use></svg> Config
+                            </button>
+                            <button class="adm-tab" onclick="Nexus.admin.tab('logs')">
+                                <svg class="icon"><use href="#icon-list"></use></svg> Logs
+                            </button>
+                        </div>
+
+                        <div class="admin-panel-content">
+                            <div id="adm-view-users" class="adm-tab-view active">
+                                <div class="panel-header">
+                                    <h3>User Database</h3>
+                                    <div class="panel-actions">
+                                        <input type="text" placeholder="Search users..." class="admin-search">
+                                        <button class="btn btn-sm btn-brand" onclick="Nexus.admin.openUserModal()">+ Add User</button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table" id="admin-user-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Rank / Name</th>
+                                                <th>Role</th>
+                                                <th>XP</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1001</td><td>Sgt Kirby</td><td>Admin</td><td>1500</td><td><span class="status active">Active</span></td><td>...</td></tr>
+                                            <tr><td>1002</td><td>Cpl Jones</td><td>User</td><td>800</td><td><span class="status active">Active</span></td><td>...</td></tr>
+                                            <tr><td>1003</td><td>LCpl Smith</td><td>User</td><td>200</td><td><span class="status locked">Locked</span></td><td>...</td></tr>
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="adm-view-system" class="adm-tab-view">
+                                <div class="panel-header">
+                                    <h3>System Configuration</h3>
+                                </div>
+                                <div class="config-grid">
+                                    <div class="config-card">
+                                        <div class="config-info">
+                                            <h4>Maintenance Mode</h4>
+                                            <p>Lock all non-admin users out of the system.</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="cfg-maintenance">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="config-card">
+                                        <div class="config-info">
+                                            <h4>Registration Open</h4>
+                                            <p>Allow new users to sign up from login screen.</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="cfg-registration" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="config-card danger-zone">
+                                        <div class="config-info">
+                                            <h4>Factory Reset</h4>
+                                            <p>Wipe all user data and progress (Irreversible).</p>
+                                        </div>
+                                        <button class="btn btn-danger btn-sm" onclick="Nexus.admin.resetDB()">Reset DB</button>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="card-grid">
-                                <div class="info-card">
-                                    <div class="card-num">01</div>
-                                    <div class="card-content">
-                                        <h3>Documentation Verification</h3>
-                                        <p>Before entering any data into MJDI, physically verify the item against the Issue Voucher (IV). Check for:</p>
-                                        <ul>
-                                            <li>Correct <span class="term" data-tip="NATO Stock Number">NSN</span></li>
-                                            <li>Correct Quantity (D of Q)</li>
-                                            <li>Condition Code (A1, R2, etc.)</li>
-                                        </ul>
+                            <div id="adm-view-logs" class="adm-tab-view">
+                                <div class="panel-header"><h3>Audit Logs</h3></div>
+                                <div class="log-terminal" id="admin-log-output">
+                                    <div class="log-entry"><span class="ts">[10:00:00]</span> SYSTEM_INIT_OK</div>
+                                    <div class="log-entry"><span class="ts">[10:00:05]</span> DB_CONNECTION_ESTABLISHED</div>
+                                    <div class="log-entry"><span class="ts">[10:01:20]</span> USER_LOGIN: KIRBY_ADMIN</div>
+                                    <div class="log-entry"><span class="ts">[10:05:00]</span> MODULE_ACCESS: RECEIPTS</div>
                                     </div>
-                                </div>
-                                <div class="info-card">
-                                    <div class="card-num">02</div>
-                                    <div class="card-content">
-                                        <h3>Transaction Selection</h3>
-                                        <p>Navigate to <strong>Transactions > Receipts</strong>. Select the appropriate code:</p>
-                                        <div class="tag-row">
-                                            <span class="tag">U010 (Dues In)</span>
-                                            <span class="tag">U013 (Local)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-card">
-                                    <div class="card-num">03</div>
-                                    <div class="card-content">
-                                        <h3>System Entry</h3>
-                                        <p>Input the details. If the system prompts for a serial number, ensure it matches the equipment plate exactly.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section class="guide-section" id="guide-issues">
-                            <div class="section-header"><h2>2.0 Issues & Outbound</h2></div>
-                            <div class="placeholder-box">
-                                <div class="spinner"></div>
-                                <span>Loading Module Data...</span>
-                            </div>
-                        </section>
-
-                        <section class="guide-section" id="guide-stock">
-                            <div class="section-header"><h2>3.0 Stocktaking & Reconciliation</h2></div>
-                            <div class="placeholder-box">
-                                <div class="spinner"></div>
-                                <span>Loading Module Data...</span>
-                            </div>
-                        </section>
-
-                        <footer class="content-footer">
-                            <span>LSS TEST System v7.0</span>
-                            <span>RLC Development Wing</span>
-                        </footer>
-                    </div>
-                </div>
-
-                <div class="view-panel" id="view-vital">
-                    <div class="vital-container">
-                        <div class="crt-frame">
-                            <div class="crt-screen">
-                                <div class="crt-scanline"></div>
-                                <div class="crt-content" id="vital-terminal">
-                                    <div class="term-line">VITAL TRANSPORT SYSTEM v4.2 - LOGISTICS NODE 1</div>
-                                    <div class="term-line">-------------------------------------------</div>
-                                    <div class="term-line">USER: KIRBY_K  |  SEC: UNCLASSIFIED  |  TID: 9921</div>
-                                    <div class="term-line spacer"></div>
-                                    <div class="term-line">SYSTEM READY.</div>
-                                    <div class="term-line">ENTER COMMAND OR PRESS F1 FOR HELP.</div>
-                                    <div class="term-line spacer"></div>
-                                    <div class="term-line prompt">> <span id="vital-cursor" class="cursor">_</span></div>
-                                </div>
-                            </div>
-                            <div class="crt-controls">
-                                <div class="key-row">
-                                    <button class="f-key" onclick="TEST.vital.input('F1')">F1 Help</button>
-                                    <button class="f-key" onclick="TEST.vital.input('F3')">F3 Exit</button>
-                                    <button class="f-key" onclick="TEST.vital.input('F5')">F5 Refresh</button>
-                                    <button class="f-key" onclick="TEST.vital.input('F10')">F10 Save</button>
-                                </div>
-                                <div class="input-row">
-                                    <input type="text" id="vital-input" placeholder="Type command..." autocomplete="off">
-                                    <button class="enter-btn" onclick="TEST.vital.submit()">ENTER</button>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="view-panel" id="view-inventory">
-                    <div class="content-wrapper">
-                        <div class="table-header">
-                            <h2>Inventory Database</h2>
-                            <div class="table-actions">
-                                <input type="text" placeholder="Filter NSN..." id="inv-search">
-                                <button class="btn btn-primary">Export CSV</button>
+                <div id="page-profile" class="page-view">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <span id="prof-initials">SK</span>
+                        </div>
+                        <div class="profile-info">
+                            <h1 id="prof-name">Sgt Kirby</h1>
+                            <span class="prof-rank" id="prof-role">System Administrator</span>
+                            <div class="prof-badges">
+                                <span class="badge gold">Top 1%</span>
+                                <span class="badge blue">Expert</span>
                             </div>
                         </div>
-                        <div class="table-container">
-                            <table class="data-table" id="inv-table">
-                                <thead>
-                                    <tr>
-                                        <th>NSN</th>
-                                        <th>Description</th>
-                                        <th>D of Q</th>
-                                        <th>Loc</th>
-                                        <th>Qty</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inv-table-body">
-                                    </tbody>
-                            </table>
+                    </div>
+                    
+                    <div class="profile-grid">
+                        <div class="prof-card">
+                            <h3>Achievements</h3>
+                            <div class="badge-grid" id="prof-badges-grid">
+                                <div class="badge-slot locked" title="Locked"><svg class="icon"><use href="#icon-lock"></use></svg></div>
+                                <div class="badge-slot locked" title="Locked"><svg class="icon"><use href="#icon-lock"></use></svg></div>
+                                <div class="badge-slot locked" title="Locked"><svg class="icon"><use href="#icon-lock"></use></svg></div>
+                                <div class="badge-slot locked" title="Locked"><svg class="icon"><use href="#icon-lock"></use></svg></div>
+                            </div>
+                        </div>
+                        <div class="prof-card">
+                            <h3>Module History</h3>
+                            <ul class="history-list" id="prof-history">
+                                <li>No history recorded.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -326,120 +585,73 @@
         </main>
     </div>
 
-    <div id="overlay-cinema" class="overlay-backdrop">
-        <div class="cinema-window">
-            <button class="cinema-close" onclick="TEST.walkthrough.close()">✕ ESC</button>
-            <div class="cinema-layout">
-                <div class="cinema-visual">
-                    <div class="visual-container">
-                        <img id="wt-img" src="" alt="Guide Step">
-                        <div class="visual-overlay">
-                            <button class="nav-arrow prev" onclick="TEST.walkthrough.prev()">
-                                <svg class="icon"><use href="#icon-chevron-left"></use></svg>
-                            </button>
-                            <button class="nav-arrow next" onclick="TEST.walkthrough.next()">
-                                <svg class="icon"><use href="#icon-chevron-right"></use></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="visual-timeline" id="wt-timeline">
-                        </div>
-                </div>
-                <div class="cinema-sidebar">
-                    <div class="sidebar-top">
-                        <span class="guide-label">INTERACTIVE GUIDE</span>
-                        <h2 id="wt-title">Guide Title</h2>
-                    </div>
-                    <div class="sidebar-mid">
-                        <div class="step-badge" id="wt-step-num">Step 1</div>
-                        <h3 id="wt-step-title">Step Title</h3>
-                        <p id="wt-step-desc">Description text...</p>
-                        <div class="tip-box" id="wt-tip">
-                            <svg class="icon"><use href="#icon-info"></use></svg>
-                            <span id="wt-tip-text">Pro tip text...</span>
-                        </div>
-                    </div>
-                    <div class="sidebar-bot">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="wt-progress"></div>
-                        </div>
-                        <div class="action-row">
-                            <button class="btn btn-secondary full" onclick="TEST.walkthrough.prev()">Back</button>
-                            <button class="btn btn-primary full" onclick="TEST.walkthrough.next()">Next Step</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="overlay-admin" class="overlay-backdrop">
-        <div class="admin-panel">
-            <div class="admin-nav">
-                <div class="admin-title">SYS ADMIN</div>
-                <button class="adm-link active" onclick="TEST.admin.switchTab('gen')">General</button>
-                <button class="adm-link" onclick="TEST.admin.switchTab('users')">Users</button>
-                <button class="adm-link" onclick="TEST.admin.switchTab('logs')">Logs</button>
-                <div class="spacer"></div>
-                <button class="adm-link danger" onclick="TEST.admin.close()">Exit</button>
-            </div>
-            <div class="admin-body">
-                <div id="adm-tab-gen" class="adm-tab-content active">
-                    <h2>System Configuration</h2>
-                    <div class="setting-group">
-                        <div class="setting-row">
-                            <div class="setting-info">
-                                <label>Maintenance Mode</label>
-                                <span>Lock all non-admin users out.</span>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-row">
-                            <div class="setting-info">
-                                <label>Debug Logging</label>
-                                <span>Verbose console output.</span>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="btn-row">
-                        <button class="btn btn-primary" onclick="alert('Settings Saved')">Save Changes</button>
-                    </div>
-                </div>
-                <div id="adm-tab-users" class="adm-tab-content">
-                    <h2>User Database</h2>
-                    <table class="adm-table">
-                        <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <tr><td>#001</td><td>Sgt Kirby</td><td>Admin</td><td><span class="status active">Active</span></td><td><button>Edit</button></td></tr>
-                            <tr><td>#002</td><td>Cpl Jones</td><td>User</td><td><span class="status active">Active</span></td><td><button>Edit</button></td></tr>
-                            <tr><td>#003</td><td>Pte Smith</td><td>User</td><td><span class="status locked">Locked</span></td><td><button>Unlock</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="overlay-cmd" class="overlay-backdrop">
-        <div class="cmd-box">
-            <div class="cmd-input">
+    <div id="modal-cmd" class="modal-backdrop">
+        <div class="cmd-window">
+            <div class="cmd-header">
                 <svg class="icon"><use href="#icon-search"></use></svg>
-                <input type="text" id="cmd-input" placeholder="Search guides, inventory, or commands..." autocomplete="off">
+                <input type="text" id="cmd-input" placeholder="Search modules, users, or settings..." autocomplete="off">
             </div>
-            <div class="cmd-results" id="cmd-results">
-                </div>
+            <div class="cmd-results" id="cmd-results"></div>
             <div class="cmd-footer">
-                <span><kbd>↵</kbd> Select</span>
                 <span><kbd>↑↓</kbd> Navigate</span>
+                <span><kbd>↵</kbd> Select</span>
                 <span><kbd>ESC</kbd> Close</span>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-user-edit" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>User Profile</h3>
+                <button class="btn-icon" onclick="Nexus.ui.closeModal('modal-user-edit')"><svg class="icon"><use href="#icon-close"></use></svg></button>
+            </div>
+            <form id="adm-user-form" onsubmit="event.preventDefault(); Nexus.admin.saveUser();">
+                <input type="hidden" id="adm-edit-id">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="adm-edit-name" required class="input-std">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="adm-edit-role" class="input-std">
+                            <option value="Student">Student</option>
+                            <option value="Instructor">Instructor</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>XP</label>
+                        <input type="number" id="adm-edit-xp" class="input-std">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="adm-edit-status" class="input-std">
+                        <option value="Active">Active</option>
+                        <option value="Locked">Locked</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-text" onclick="Nexus.ui.closeModal('modal-user-edit')">Cancel</button>
+                    <button type="submit" class="btn btn-brand">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-levelup" class="modal-backdrop center-content">
+        <div class="levelup-card">
+            <div class="levelup-anim-bg"></div>
+            <div class="levelup-icon"><svg class="icon"><use href="#icon-award"></use></svg></div>
+            <h2>PROMOTION GRANTED</h2>
+            <p>You have reached Level <span id="lvl-up-num">2</span></p>
+            <div class="rewards-list">
+                <span>+ Access to Advanced Modules</span>
+                <span>+ Profile Badge</span>
+            </div>
+            <button class="btn btn-brand btn-lg" onclick="Nexus.ui.closeModal('modal-levelup')">Dismiss</button>
         </div>
     </div>
 
