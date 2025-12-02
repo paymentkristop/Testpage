@@ -578,53 +578,54 @@ class AdminController {
         document.getElementById('adm-edit-status').value = user.status;
     }
 
-    saveUser() {
-        const id = document.getElementById('adm-edit-id').value;
-        const name = document.getElementById('adm-edit-name').value;
-        const role = document.getElementById('adm-edit-role').value;
-        const xp = parseInt(document.getElementById('adm-edit-xp').value) || 0;
-        const status = document.getElementById('adm-edit-status').value;
-        
-        const users = this.core.store.getUsers();
-        
-        if (id) {
-            // Update
-            const idx = users.findIndex(u => u.id === id);
-if (idx !== -1) {
-    users[idx] = { 
-        ...users[idx],
-        name,
-        role,
-        xp,
-        status
-    };
-}
-        } else {
-            // Create
-            const newId = Math.floor(30000000 + Math.random() * 900000).toString();
-            users.push({
-                id: newId,
-                name, role, status, xp,
-                level: Math.floor(xp / 1000),
-                badges: [],
-                completedModules: [],
-                password: 'user',
-                initials: name
-    .split(' ')
-    .filter(Boolean)
-    .map(n => n[0])
-    .join('')
-    .slice(0,2)
-    .toUpperCase(),
-                lastLogin: 'Never'
-            });
+saveUser() {
+    const id = document.getElementById('adm-edit-id').value;
+    const name = document.getElementById('adm-edit-name').value.trim();
+    const role = document.getElementById('adm-edit-role').value;
+    const xp = parseInt(document.getElementById('adm-edit-xp').value, 10) || 0;
+    const status = document.getElementById('adm-edit-status').value;
+
+    const users = this.core.store.getUsers();
+
+    if (id) {
+        // UPDATE EXISTING USER
+        const idx = users.findIndex(u => u.id === id);
+        if (idx !== -1) {
+            const existing = users[idx];
+            users[idx] = {
+                ...existing,
+                name,
+                role,
+                xp,
+                level: Math.floor(xp / CONFIG.gameSettings.levelThreshold),
+                status
+            };
         }
-        
-        this.core.store.saveUsers(users);
-        this.core.ui.closeModal('modal-user-edit');
-        this.renderUsers();
-        this.core.game.showToast('User Database Updated', 'success');
+    } else {
+        // CREATE NEW USER
+        const newId = `USR${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`;
+        users.push({
+            id: newId,
+            username: newId.toLowerCase(),
+            initials: name
+                .split(' ')
+                .map(part => part[0]?.toUpperCase() || '')
+                .join(''),
+            name,
+            role,
+            xp,
+            level: Math.floor(xp / CONFIG.gameSettings.levelThreshold),
+            status,
+            badges: [],
+            completedModules: [],
+            lastLogin: new Date().toISOString().slice(0,10)
+        });
     }
+
+    this.core.store.saveUsers(users);
+    this.renderUsers();
+    this.core.ui.closeModal('modal-user-edit');
+}
 
     resetDB() {
         if(confirm("CRITICAL WARNING: This will wipe all user progress and reset to factory defaults. Proceed?")) {
@@ -812,10 +813,84 @@ toggleSidebar() {
         }
     }
     
-    renderProfile() {
-        // Implementation for profile view would go here similar to dashboard
-        // Populating badge grid, history list, etc.
+renderProfile() {
+    const user = this.core.store.currentUser;
+    if (!user) return;
+
+    // Top header
+    const initialsEl = document.getElementById('prof-initials');
+    const nameEl = document.getElementById('prof-name');
+    const roleEl = document.getElementById('prof-role');
+
+    if (initialsEl) initialsEl.textContent = user.initials || (user.name || '')
+        .split(' ')
+        .map(p => p[0]?.toUpperCase() || '')
+        .join('');
+    if (nameEl) nameEl.textContent = user.name || user.username;
+    if (roleEl) roleEl.textContent = user.role || 'Learner';
+
+    // Badges grid
+    const badgeGrid = document.getElementById('prof-badges-grid');
+    if (badgeGrid) {
+        badgeGrid.innerHTML = '';
+
+        if (user.badges && user.badges.length) {
+            user.badges.forEach(badgeId => {
+                const badge = SEED_BADGES[badgeId];
+                if (!badge) return;
+
+                const slot = document.createElement('div');
+                slot.className = 'badge-slot unlocked';
+                slot.title = badge.name;
+
+                slot.innerHTML = `
+                    <svg class="icon"><use href="#icon-award"></use></svg>
+                    <span>${badge.name}</span>
+                `;
+
+                badgeGrid.appendChild(slot);
+            });
+        } else {
+            // If no badges, show the locked placeholders (4)
+            for (let i = 0; i < 4; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'badge-slot locked';
+                slot.title = 'Locked';
+                slot.innerHTML = `<svg class="icon"><use href="#icon-lock"></use></svg>`;
+                badgeGrid.appendChild(slot);
+            }
+        }
     }
+
+    // History list
+    const historyList = document.getElementById('prof-history');
+    if (historyList) {
+        historyList.innerHTML = '';
+
+        const completed = user.completedModules || [];
+        if (!completed.length) {
+            historyList.innerHTML = '<li>No history recorded.</li>';
+        } else {
+            completed.forEach(entry => {
+                // entry can be an id string or object; handle both
+                const moduleId = typeof entry === 'string' ? entry : entry.id;
+                const module = SEED_MODULES[moduleId];
+
+                const li = document.createElement('li');
+                const title = module ? module.title : moduleId.toUpperCase();
+                const date = typeof entry === 'object' && entry.date
+                    ? entry.date
+                    : (user.lastLogin || 'Unknown date');
+
+                li.innerHTML = `
+                    <span class="hist-title">${title}</span>
+                    <span class="hist-meta">${date}</span>
+                `;
+                historyList.appendChild(li);
+            });
+        }
+    }
+}
 }
 
 /* ==========================================================================================
