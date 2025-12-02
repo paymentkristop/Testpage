@@ -18,7 +18,34 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="state-booting">
+<div id="sys-boot-layer">
+    <div class="boot-container">
+        <div class="boot-logo">
+            <div class="logo-orb">
+                <span>LSS</span>
+            </div>
+            <div class="boot-title">
+                <span class="boot-sys">NEXUS ENTERPRISE CORE</span>
+                <span class="boot-ver">Build 9.0.21</span>
+            </div>
+        </div>
 
+        <div class="boot-terminal" id="boot-log">
+            <div class="log-line">[SYS] Initialising LSS NEXUS v9.0.21.</div>
+            <div class="log-line">[DB] Seeding local training datastore.</div>
+            <div class="log-line">[AUTH] Waiting for user session.</div>
+        </div>
+
+        <div class="boot-progress-track">
+            <div class="boot-progress-bar" id="boot-bar"></div>
+        </div>
+
+        <div class="boot-meta">
+            <span>ENV: LOCAL TRAINING</span>
+            <span>STATUS: ONLINE</span>
+        </div>
+    </div>
+</div>
     <svg style="display: none;" aria-hidden="true">
         <symbol id="icon-dashboard" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3h8v8h-8V3zm0 10h8v8h-8v-8zM3 3h8v8H3V3zm0 10h8v8H3v-8z"/></symbol>
         <symbol id="icon-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol>
@@ -257,7 +284,10 @@
                         <div class="hero-content">
                             <div class="hero-text">
                                 <h1>Operational Readiness</h1>
-                                <p>Welcome, <span id="dash-user-name">User</span>. Your training compliance is currently at <span id="dash-compliance">0%</span>. Review your pending modules below.</p>
+                                <p>Welcome, <span id="dash-user-name">User</span>. <p>
+    Your training compliance is currently at <span id="dash-compliance">0%</span>. 
+    You have <span id="pending-tasks-count">0</span> modules still to complete, review your pending modules below.
+</p>
                             </div>
                             <div class="hero-chart-area">
                                 <div class="chart-circle" id="completion-chart" style="--p:0">
@@ -318,8 +348,8 @@
                         </div>
                     </div>
 
-                    <div class="modules-grid">
-                        <div class="module-card">
+                  <!-- <div class="modules-grid">
+                        <div class="modules-card">
                             <div class="card-thumb receipts-bg">
                                 <span class="card-badge">Core</span>
                             </div>
@@ -332,7 +362,8 @@
                                 </div>
                                 <button class="btn btn-brand full" onclick="Nexus.task.start('receipts')">Start Module</button>
                             </div>
-                        </div>
+                        </div>-->
+						<div id="modules-grid" class="modules-grid"></div>
 
                         <div class="module-card">
                             <div class="card-thumb issues-bg">
@@ -655,6 +686,8 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+<script src="data-seed.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
